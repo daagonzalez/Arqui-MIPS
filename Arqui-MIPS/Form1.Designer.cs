@@ -1,6 +1,6 @@
 ﻿namespace Arqui_MIPS
 {
-    partial class Form1
+    partial class FrmPrincipal
     {
         /// <summary>
         /// Required designer variable.
@@ -28,9 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPrincipal));
+            this.SuspendLayout();
+            // 
+            // FrmPrincipal
+            // 
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Form1";
+            this.Name = "FrmPrincipal";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
