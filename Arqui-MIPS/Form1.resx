@@ -141,7 +141,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnBrowse.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>8</value>
   </data>
   <data name="txtQuantum.Location" type="System.Drawing.Point, System.Drawing">
     <value>159, 126</value>
@@ -150,7 +150,7 @@
     <value>1000</value>
   </data>
   <data name="txtQuantum.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 20</value>
+    <value>125, 20</value>
   </data>
   <data name="txtQuantum.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -165,7 +165,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;txtQuantum.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>7</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -174,13 +174,13 @@
     <value>12, 126</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>50, 13</value>
+    <value>94, 13</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>Quantum</value>
+    <value>Valor del Quantum</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
@@ -192,7 +192,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>6</value>
   </data>
   <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -226,30 +226,6 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="rtbOpenedFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 222</value>
-  </data>
-  <data name="rtbOpenedFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>707, 97</value>
-  </data>
-  <data name="rtbOpenedFile.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="rtbOpenedFile.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="&gt;&gt;rtbOpenedFile.Name" xml:space="preserve">
-    <value>rtbOpenedFile</value>
-  </data>
-  <data name="&gt;&gt;rtbOpenedFile.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RichTextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rtbOpenedFile.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;rtbOpenedFile.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
   <data name="btnStart.Enabled" type="System.Boolean, mscorlib">
@@ -394,7 +370,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>731, 334</value>
+    <value>731, 221</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Form1</value>

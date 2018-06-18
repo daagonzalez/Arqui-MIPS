@@ -34,7 +34,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.label2 = new System.Windows.Forms.Label();
-            this.rtbOpenedFile = new System.Windows.Forms.RichTextBox();
             this.btnStart = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.rdbRapida = new System.Windows.Forms.RadioButton();
@@ -71,16 +70,12 @@
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
             // 
-            // rtbOpenedFile
-            // 
-            resources.ApplyResources(this.rtbOpenedFile, "rtbOpenedFile");
-            this.rtbOpenedFile.Name = "rtbOpenedFile";
-            // 
             // btnStart
             // 
             resources.ApplyResources(this.btnStart, "btnStart");
             this.btnStart.Name = "btnStart";
             this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // label3
             // 
@@ -117,7 +112,6 @@
             this.Controls.Add(this.rdbRapida);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btnStart);
-            this.Controls.Add(this.rtbOpenedFile);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtQuantum);
@@ -135,7 +129,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.RichTextBox rtbOpenedFile;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.RadioButton rdbRapida;

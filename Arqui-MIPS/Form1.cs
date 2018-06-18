@@ -28,18 +28,17 @@ namespace Arqui_MIPS
             {
                 lvSelectedFiles.Items.Add(fileName);
             }
-            rtbOpenedFile.Text = "";
             if (fileSelected == DialogResult.OK)
             {
-                string[] filelines = File.ReadAllLines(openFileDialog1.FileName);
-                foreach (string line in filelines)
-                {
-                    rtbOpenedFile.Text += line;
-                    if (line != filelines.Last<string>())
-                    {
-                        rtbOpenedFile.Text += "\n";
-                    }
-                }
+                //string[] filelines = File.ReadAllLines(openFileDialog1.FileName);
+                //foreach (string line in filelines)
+                //{
+                //    rtbOpenedFile.Text += line;
+                //    if (line != filelines.Last<string>())
+                //    {
+                //        rtbOpenedFile.Text += "\n";
+                //    }
+                //}
             }
         }
         
@@ -61,6 +60,12 @@ namespace Arqui_MIPS
             {
                 e.Handled = true;
             }
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            Resultados fResultados = new Resultados();
+            fResultados.Show();
         }
     }
 }
