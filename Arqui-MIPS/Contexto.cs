@@ -12,10 +12,12 @@ namespace Arqui_MIPS
         private int[] registros;
         private int ticks;
         private int quantum;
+        private int id;
 
-        public Contexto(int PC)
+        public Contexto(int PC, int id)
         {
             this.PC = PC;
+            this.id = id;
             registros = new int[32];
             ticks = 0;
             quantum = 0;
@@ -39,6 +41,11 @@ namespace Arqui_MIPS
         public int GetQuantum()
         {
             return quantum;
+        }
+
+        public int GetId()
+        {
+            return id;
         }
 
         public void SetPC(int nPC)

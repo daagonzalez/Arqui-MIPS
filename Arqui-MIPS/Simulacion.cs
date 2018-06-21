@@ -50,6 +50,7 @@ namespace Arqui_MIPS
         {
             int indiceInstruccion = DIRECCION_INICIO_INSTRUCCION;
             int indicePalabra = 0;
+            int idContexto = 0;
             foreach (string linea in lineasHilillos)
             {
                 if (indicePalabra >= 4)
@@ -68,11 +69,12 @@ namespace Arqui_MIPS
                 }
 
                 //Crear el contexto y encolarlo a la cola de contextos
-                Contexto contexto = new Contexto(indiceInstruccion);
+                Contexto contexto = new Contexto(indiceInstruccion,idContexto);
                 colaContextos.Enqueue(contexto);
 
                 indiceInstruccion += 4;
                 indicePalabra++;
+                idContexto++;
             }
         }
     }
