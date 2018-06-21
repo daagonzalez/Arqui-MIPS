@@ -38,14 +38,14 @@ namespace Arqui_MIPS
             lineasHilillos = lineas;
             quantum = quantumIngresado;
             ejecucionLenta = lenta;
-            string msg = "";
-            foreach (string linea in lineas)
-            {
-                msg += linea + "\n";
-            }
-            MessageBox.Show(msg);
+            CargarInstrucciones();
+            MessageBox.Show(Memoria.PrintInstrucciones());
         }
 
+        /*
+         * Carga las instrucciones en la memoria y crea los contextos para cada hilillo
+         * Si no hay espacio suficiente, muestra un error y termina la ejecución de la simulación
+         */
         public void CargarInstrucciones()
         {
             int indiceInstruccion = DIRECCION_INICIO_INSTRUCCION;
@@ -61,8 +61,17 @@ namespace Arqui_MIPS
                 int rZ = Int32.Parse(partesLinea[3]);
 
                 int[] palabra = { codigoOperacion, rX, rY, rZ };
-                memoria.SetPalabraInstruccion(indiceInstruccion, indicePalabra, palabra);
-                indiceInstruccion++;
+                if (!memoria.SetPalabraInstruccion(indiceInstruccion, indicePalabra, palabra))
+                {
+                    MessageBox.Show("No hay memoria suficiente para cargar el programa. Intente de nuevo con un programa más pequeño","Error cargando los hilillos", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    Application.Exit();
+                }
+
+                //Crear el contexto y encolarlo a la cola de contextos
+                Contexto contexto = new Contexto(indiceInstruccion);
+                colaContextos.Enqueue(contexto);
+
+                indiceInstruccion += 4;
                 indicePalabra++;
             }
         }
