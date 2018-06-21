@@ -44,28 +44,28 @@ namespace Arqui_MIPS
          //Memoria de datos
         public int GetPalabraDato(int indMem, int palabra)
         {
-            return memoriaDatos[indMem].GetPalabra(palabra);
+            return memoriaDatos[indMem / 16].GetPalabra(palabra);
         }
 
         public int GetEstadoDato(int indMem)
         {
-            return memoriaDatos[indMem].GetEstado();
+            return memoriaDatos[indMem / 16].GetEstado();
         }
 
         public int GetEtiquetaDato(int indMem)
         {
-            return memoriaDatos[indMem].GetEtiqueta();
+            return memoriaDatos[indMem / 16].GetEtiqueta();
         }
 
         //Memoria de instrucciones
         public int[] GetPalabraInstruccion(int indMem, int palabra)
         {
-            return memoriaInstrucciones[indMem].GetPalabra(palabra);
+            return memoriaInstrucciones[indMem / 16].GetPalabra(palabra);
         }
 
         public int GetEtiquetaInstruccion(int indMem)
         {
-            return memoriaInstrucciones[indMem].GetEtiqueta();
+            return memoriaInstrucciones[indMem / 16].GetEtiqueta();
         }
 
         /*
@@ -74,26 +74,26 @@ namespace Arqui_MIPS
          //Memoria de datos
         public void SetPalabraDato(int indMem, int palabra, int nValor)
         {
-            memoriaDatos[indMem].SetPalabra(nValor, palabra);
+            memoriaDatos[indMem / 16].SetPalabra(nValor, palabra);
         }
         public void SetEstadoDato(int indMem, int nEstado)
         {
-            memoriaDatos[indMem].SetEstado(nEstado);
+            memoriaDatos[indMem / 16].SetEstado(nEstado);
         }
         public void SetEtiquetaDato(int indMem, int nEtiqueta)
         {
-            memoriaDatos[indMem].SetEtiqueta(nEtiqueta);
+            memoriaDatos[indMem / 16].SetEtiqueta(nEtiqueta);
         }
 
         //Memoria de instrucciones
         public void SetPalabraInstruccion(int indMem, int palabra, int[] nValor)
         {
-            memoriaInstrucciones[indMem].SetPalabra(nValor, palabra);
+            memoriaInstrucciones[indMem / 16].SetPalabra(nValor, palabra);
         }
 
         public void SetEtiquetaInstruccion(int indMem, int nEtiqueta)
         {
-            memoriaInstrucciones[indMem].SetEtiqueta(nEtiqueta);
+            memoriaInstrucciones[indMem/16].SetEtiqueta(nEtiqueta);
         }
     }
 
