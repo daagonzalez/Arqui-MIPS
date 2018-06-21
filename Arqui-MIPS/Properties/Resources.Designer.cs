@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Arqui_MIPS.Properties
-{
-
-
+namespace Arqui_MIPS.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,52 +19,230 @@ namespace Arqui_MIPS.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources
-    {
-
+    public class Resources {
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources()
-        {
+        internal Resources() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager
-        {
-            get
-            {
-                if ((resourceMan == null))
-                {
+        public static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Arqui_MIPS.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture
-        {
-            get
-            {
+        public static global::System.Globalization.CultureInfo Culture {
+            get {
                 return resourceCulture;
             }
-            set
-            {
+            set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 8 0 4 4
+        ///8 0 1 5
+        ///8 0 20 20
+        ///8 0 2 112
+        ///8 0 5 20
+        ///34 5 1 5
+        ///5 5 0 -2
+        ///43 2 1 0
+        ///43 2 1 4
+        ///43 2 1 8
+        ///43 2 1 12
+        ///34 20 4 20
+        ///8 2 2 16
+        ///5 20 0 -10
+        ///8 0 31 99
+        ///43 0 31 368
+        ///35 0 13 92
+        ///35 0 12 0
+        ///35 0 14 28
+        ///35 0 15 364
+        ///63 0 0 0.
+        /// </summary>
+        public static string _0 {
+            get {
+                return ResourceManager.GetString("_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 8 0 4 4
+        ///8 0 2 2
+        ///8 0 28 28
+        ///8 0 16 160
+        ///8 0 5 3
+        ///43 16 2 0
+        ///43 16 2 4
+        ///43 16 2 8
+        ///43 16 2 12
+        ///34 28 4 28
+        ///8 16 16 16
+        ///8 5 5 -1
+        ///5 5 0 -2
+        ///5 28 0 -10
+        ///8 0 31 88
+        ///43 0 31 0
+        ///35 0 13 92
+        ///35 0 11 368
+        ///35 0 14 28
+        ///35 0 15 364
+        ///63 0 0 0.
+        /// </summary>
+        public static string _1 {
+            get {
+                return ResourceManager.GetString("_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 8 0 4 4
+        ///8 0 3 3
+        ///8 0 28 28
+        ///8 0 24 240
+        ///8 0 5 4
+        ///43 24 3 0
+        ///43 24 3 4
+        ///8 5 5 -1
+        ///5 5 0 -2
+        ///43 24 3 8
+        ///43 24 3 12
+        ///34 28 4 28
+        ///8 24 24 16
+        ///5 28 0 -10
+        ///8 0 31 55
+        ///43 0 31 92
+        ///35 0 11 368
+        ///35 0 12 0
+        ///35 0 14 28
+        ///35 0 15 364
+        ///63 0 0 0.
+        /// </summary>
+        public static string _2 {
+            get {
+                return ResourceManager.GetString("_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 8 0 4 4
+        ///8 0 3 0
+        ///34 30 30 30
+        ///34 10 10 10
+        ///8 0 25 256
+        ///8 0 8 8
+        ///35 25 5 0
+        ///35 25 6 4
+        ///32 5 6 3
+        ///32 30 3 30
+        ///43 25 4 0
+        ///43 25 4 4
+        ///35 25 5 8
+        ///35 25 6 12
+        ///32 5 6 10
+        ///43 25 4 8
+        ///43 25 4 12
+        ///32 30 10 30
+        ///8 8 8 -4
+        ///8 25 25 16
+        ///5 8 0 -15
+        ///43 0 30 20
+        ///4 8 0 1
+        ///43 0 25 24
+        ///8 0 31 44
+        ///43 0 31 28
+        ///35 0 11 368
+        ///35 0 12 0
+        ///35 0 13 92
+        ///35 0 15 364
+        ///63 0 0 0.
+        /// </summary>
+        public static string _3 {
+            get {
+                return ResourceManager.GetString("_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 32 0 0 1
+        ///8 0 4 4
+        ///8 0 2 96
+        ///8 0 3 64
+        ///8 0 5 2
+        ///35 2 6 0
+        ///35 2 7 4
+        ///35 2 8 8
+        ///35 2 9 12
+        ///34 3 4 3
+        ///8 2 2 16
+        ///32 1 6 1
+        ///32 1 7 1
+        ///32 1 8 1
+        ///32 1 9 1
+        ///8 5 5 -1
+        ///5 5 0 -2
+        ///5 3 0 -14
+        ///43 0 1 380
+        ///8 0 31 33
+        ///43 0 31 364
+        ///35 0 11 368
+        ///35 0 12 0
+        ///35 0 13 92
+        ///35 0 14 28
+        ///63 0 0 0.
+        /// </summary>
+        public static string _4 {
+            get {
+                return ResourceManager.GetString("_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 8 0 4 10
+        ///34 5 5 5
+        ///8 4 4 -1
+        ///32 5 4 5
+        ///5 4 0 -3
+        ///3 0 0 16
+        ///12 22 2 22
+        ///43 0 5 64
+        ///43 0 22 68
+        ///63 0 0 0
+        ///8 0 21 12
+        ///34 22 22 22
+        ///8 0 2 2
+        ///14 21 2 23
+        ///8 21 21 -2
+        ///32 22 23 22
+        ///5 21 0 -4
+        ///2 31 0 0.
+        /// </summary>
+        public static string _5 {
+            get {
+                return ResourceManager.GetString("_5", resourceCulture);
             }
         }
     }

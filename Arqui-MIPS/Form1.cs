@@ -13,33 +13,30 @@ namespace Arqui_MIPS
 {
     public partial class FrmPrincipal : Form
     {
+        List<string> lineas;
         public FrmPrincipal()
         {
             InitializeComponent();
             openFileDialog1.Title = "Seleccione el archivo con los hilillos";
             openFileDialog1.Filter = "Archivos txt|*.txt";
             openFileDialog1.InitialDirectory = Application.StartupPath;
+            lineas = new List<string>();
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             var fileSelected = openFileDialog1.ShowDialog();
-            foreach (var fileName in openFileDialog1.FileNames)
-            {
-                lvSelectedFiles.Items.Add(fileName);
-            }
             if (fileSelected == DialogResult.OK)
             {
-                //string[] filelines = File.ReadAllLines(openFileDialog1.FileName);
-                //foreach (string line in filelines)
-                //{
-                //    rtbOpenedFile.Text += line;
-                //    if (line != filelines.Last<string>())
-                //    {
-                //        rtbOpenedFile.Text += "\n";
-                //    }
-                //}
-            }
+                foreach (var fileName in openFileDialog1.FileNames)
+                {
+                    lvSelectedFiles.Items.Add(fileName);
+                    foreach (string linea in File.ReadAllLines(fileName))
+                    {
+                        lineas.Add(linea);
+                    }
+                }
+            }            
         }
         
         private void txtQuantum_TextChanged(object sender, EventArgs e)
@@ -64,8 +61,14 @@ namespace Arqui_MIPS
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            Resultados fResultados = new Resultados();
-            fResultados.Show();
+            int quantum = Int32.Parse(txtQuantum.Text);
+            bool lenta = false;
+            if (rdbLenta.Checked)
+                lenta = true;
+
+            Simulacion fSimulacion = new Simulacion(lineas, quantum, lenta);
+            fSimulacion.Show();
+            this.Hide();
         }
     }
 }

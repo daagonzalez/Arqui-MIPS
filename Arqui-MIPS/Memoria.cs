@@ -28,12 +28,12 @@ namespace Arqui_MIPS
             int et = 0;
             for (int i = 0; i < (tamanoMemoriaDatos); i++)
             {
-                memoriaDatos[i].SetEtiqueta(et);
+                memoriaDatos[i] = new BloqueDato(et);
                 et++;
             }
             for (int i = 0; i < (tamanoMemoriaInstrucciones); i++)
             {
-                memoriaInstrucciones[i].SetEtiqueta(et);
+                memoriaInstrucciones[i] = new BloqueInstruccion(et);
                 et++;
             }
         }
@@ -103,9 +103,9 @@ namespace Arqui_MIPS
         int estado;
         int[] palabras;
 
-        public BloqueDato()
+        public BloqueDato(int etiqueta)
         {
-            etiqueta = -1;
+            this.etiqueta = etiqueta;
             estado = -1;
             palabras = new int[4];
             for (int i = 0; i < 4; i++)
@@ -143,9 +143,10 @@ namespace Arqui_MIPS
         int etiqueta;
         int[][] palabras;
 
-        public BloqueInstruccion()
+        public BloqueInstruccion(int etiqueta)
         {
-            etiqueta = -1;
+            this.etiqueta = etiqueta;
+            palabras = new int[4][];
             for (int i = 0; i < 4; i++)
             {
                 palabras[i] = new int[4];
