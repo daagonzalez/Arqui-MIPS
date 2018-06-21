@@ -13,14 +13,14 @@ namespace Arqui_MIPS
 {
     public partial class FrmPrincipal : Form
     {
-        List<string> lineas;
+        List<List<string>> hilillos;
         public FrmPrincipal()
         {
             InitializeComponent();
-            openFileDialog1.Title = "Seleccione el archivo con los hilillos";
-            openFileDialog1.Filter = "Archivos txt|*.txt";
+            openFileDialog1.Title = "Seleccione los archivos con los hilillos";
+            openFileDialog1.Filter = "Archivos .txt|*.txt";
             openFileDialog1.InitialDirectory = Application.StartupPath;
-            lineas = new List<string>();
+            hilillos = new List<List<string>>();
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -31,10 +31,12 @@ namespace Arqui_MIPS
                 foreach (var fileName in openFileDialog1.FileNames)
                 {
                     lvSelectedFiles.Items.Add(fileName);
+                    List<string> lineas = new List<string>();
                     foreach (string linea in File.ReadAllLines(fileName))
                     {
                         lineas.Add(linea);
                     }
+                    hilillos.Add(lineas);
                 }
             }            
         }
@@ -66,7 +68,7 @@ namespace Arqui_MIPS
             if (rdbLenta.Checked)
                 lenta = true;
 
-            Simulacion fSimulacion = new Simulacion(lineas, quantum, lenta);
+            Simulacion fSimulacion = new Simulacion(hilillos, quantum, lenta);
             fSimulacion.Show();
             this.Hide();
         }

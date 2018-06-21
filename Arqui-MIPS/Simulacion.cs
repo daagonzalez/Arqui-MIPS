@@ -23,11 +23,11 @@ namespace Arqui_MIPS
         List<Contexto> contextosTerminados;
 
         //Parametros de inicio
-        private List<string> lineasHilillos;
+        private List<List<string>> hilillos;
         private int quantum;
         private bool ejecucionLenta;
 
-        public Simulacion(List<string> lineas, int quantumIngresado, bool lenta)
+        public Simulacion(List<List<string>> hilillos, int quantumIngresado, bool lenta)
         {
             InitializeComponent();
 
@@ -35,7 +35,7 @@ namespace Arqui_MIPS
             colaContextos = new Queue<Contexto>();
             contextosTerminados = new List<Contexto>();
 
-            lineasHilillos = lineas;
+            this.hilillos = hilillos;
             quantum = quantumIngresado;
             ejecucionLenta = lenta;
             CargarInstrucciones();
@@ -51,36 +51,41 @@ namespace Arqui_MIPS
             int indiceInstruccion = DIRECCION_INICIO_INSTRUCCION;
             int indicePalabra = 0;
             int idContexto = 0;
-            foreach (string linea in lineasHilillos)
+            foreach (List<string> lineasHilillos in hilillos)
             {
-                if (indicePalabra >= 4)
-                    indicePalabra = 0;
-
-                //Generar palabra para guardar en el bloque
-                string[] partesLinea = linea.Split(' ');
-                int codigoOperacion = Int32.Parse(partesLinea[0]);
-                int rX = Int32.Parse(partesLinea[2]);
-                int rY = Int32.Parse(partesLinea[1]);
-                int rZ = Int32.Parse(partesLinea[3]);
-
-                int[] palabra = { codigoOperacion, rX, rY, rZ };
-
-                //Guardar palabra
-                if (!memoria.SetPalabraInstruccion(indiceInstruccion, indicePalabra, palabra))
-                {
-                    MessageBox.Show("No hay memoria suficiente para cargar el programa. Intente de nuevo con un programa más pequeño","Error cargando los hilillos", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                    Application.Exit();
-                }
-
-                //Crear el contexto y encolarlo a la cola de contextos
-                Contexto contexto = new Contexto(indiceInstruccion,idContexto);
+                //Crear el contexto y encolarlo en la cola de contextos
+                Contexto contexto = new Contexto(indiceInstruccion, idContexto, 1, quantum); //Un contexto por hilillo
                 colaContextos.Enqueue(contexto);
-
-                //Aumentar índices
-                indiceInstruccion += 4;
-                indicePalabra++;
                 idContexto++;
+
+                //Parsear lineas para guardarlas en memoria
+                foreach (string linea in lineasHilillos)
+                {
+                    if (indicePalabra >= 4)
+                        indicePalabra = 0;
+
+                    //Generar palabra para guardar en el bloque
+                    string[] partesLinea = linea.Split(' ');
+                    int codigoOperacion = Int32.Parse(partesLinea[0]);
+                    int rX = Int32.Parse(partesLinea[2]);
+                    int rY = Int32.Parse(partesLinea[1]);
+                    int rZ = Int32.Parse(partesLinea[3]);
+
+                    int[] palabra = { codigoOperacion, rX, rY, rZ };
+
+                    //Guardar palabra
+                    if (!memoria.SetPalabraInstruccion(indiceInstruccion, indicePalabra, palabra))
+                    {
+                        MessageBox.Show("No hay memoria suficiente para cargar el programa. Intente de nuevo con un programa más pequeño","Error cargando los hilillos", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        Application.Exit();
+                    }
+
+                    //Aumentar índices
+                    indiceInstruccion += 4;
+                    indicePalabra++;                    
+                }                
             }
+            MessageBox.Show("Cantidad de contextos: " + colaContextos.Count());
         }
 
         private void Simulacion_Load(object sender, EventArgs e)

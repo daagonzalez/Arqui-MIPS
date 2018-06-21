@@ -10,17 +10,20 @@ namespace Arqui_MIPS
     {
         private int PC;
         private int[] registros;
-        private int ticks;
+        private readonly int cicloLlegada;
+        private int cicloSalida;
         private int quantum;
-        private int id;
+        private readonly int id;
 
-        public Contexto(int PC, int id)
+        public Contexto(int PC, int id, int cicloLlegada, int quantum)
         {
             this.PC = PC;
             this.id = id;
             registros = new int[32];
-            ticks = 0;
-            quantum = 0;
+            registros[0] = 0;
+            this.cicloLlegada = cicloLlegada;
+            cicloSalida = -1;
+            this.quantum = quantum;
         }
 
         public int GetPC()
@@ -33,9 +36,9 @@ namespace Arqui_MIPS
             return registros[i];
         }
 
-        public int GetTicks()
+        public int GetDuracion()
         {
-            return ticks;
+            return cicloSalida - cicloLlegada;
         }
 
         public int GetQuantum()
@@ -58,9 +61,9 @@ namespace Arqui_MIPS
             registros[i] = nValor;
         }
 
-        public void SetTicks(int nTicks)
+        public void SetCicloSalida(int cicloSalida)
         {
-            ticks = nTicks;
+            this.cicloSalida = cicloSalida;
         }
 
         public void SetQuantum(int nQuantum)
@@ -68,16 +71,11 @@ namespace Arqui_MIPS
             quantum = nQuantum;
         }
 
-        public void IncrementarQuantum()
+        public void DisminuirQuantum()
         {
-            quantum++;
+            quantum--;
         }
-
-        public void IncrementarTicks()
-        {
-            ticks++;
-        }
-
+       
         public void AumentarPC(int aumento)
         {
             PC += aumento;
