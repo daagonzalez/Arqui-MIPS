@@ -9,12 +9,14 @@ namespace Arqui_MIPS
     class Procesador
     {
         //Constantes
-        public const int tamanoMemoriaDatos = 64;
+        public const int tamanoMemoriaDatos = 24;
         public const int tamanoMemoriaInstrucciones = 40;
 
         //Memoria
         public BloqueDato[] memoriaDatos;
         public BloqueInstruccion[] memoriaInstrucciones;
+        public Queue<Contexto> colaContextos;
+        public List<Contexto> contextosTerminados;
 
         /*
         * Constructor de la clase
@@ -43,13 +45,13 @@ namespace Arqui_MIPS
         {
             int etiqueta;
             int estado;
-            int[] datos;
+            int[] palabras;
 
             public BloqueDato()
             {
                 etiqueta = -1;
                 estado = -1;
-                datos = new int[4]; //TODO: Revisar
+                palabras = new int[4];
             }
             public void setEtiqueta(int nEtiqueta)
             {
@@ -59,9 +61,9 @@ namespace Arqui_MIPS
             {
                 estado = nEstado;
             }
-            public void setDato(int nDato, int i)
+            public void setPalabra(int nPalabra, int i)
             {
-                datos[i] = nDato;
+                palabras[i] = nPalabra;
             }
 
             public int getEtiqueta()
@@ -72,39 +74,42 @@ namespace Arqui_MIPS
             {
                 return estado;
             }
-            public int getDato(int i)
+            public int getPalabra(int i)
             {
-                return datos[i];
+                return palabras[i];
             }
         }
 
         public class BloqueInstruccion
         {
             int etiqueta;
-            int[] datos;
+            int[][] palabras;
 
             public BloqueInstruccion()
             {
                 etiqueta = -1;
-                datos = new int[4]; //TODO: Revisar
+                for (int i = 0; i < 4; i++)
+                {
+                    palabras[i] = new int[4];
+                }
             }
             
             public void setEtiqueta(int nEtiqueta)
             {
                 etiqueta = nEtiqueta;
             }
-            public void setDato(int nDato, int i)
+            public void setPalabra(int[] nPalabra, int i)
             {
-                datos[i] = nDato;
+                palabras[i] = nPalabra;
             }
 
             public int getEtiqueta()
             {
                 return etiqueta;
             }
-            public int getDato(int i)
+            public int[] getPalabra(int i)
             {
-                return datos[i];
+                return palabras[i];
             }
         }
     }
