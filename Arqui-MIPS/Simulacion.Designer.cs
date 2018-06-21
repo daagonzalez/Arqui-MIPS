@@ -94,7 +94,6 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Simulación en ejecución";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label3.Visible = false;
             // 
             // Simulacion
             // 
@@ -108,9 +107,12 @@
             this.Controls.Add(this.lblReloj);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Simulacion";
             this.Text = "Simulacion";
+            this.Load += new System.EventHandler(this.Simulacion_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Simulacion_KeyDown);
             this.ResumeLayout(false);
 
         }

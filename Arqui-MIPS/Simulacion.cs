@@ -55,6 +55,8 @@ namespace Arqui_MIPS
             {
                 if (indicePalabra >= 4)
                     indicePalabra = 0;
+
+                //Generar palabra para guardar en el bloque
                 string[] partesLinea = linea.Split(' ');
                 int codigoOperacion = Int32.Parse(partesLinea[0]);
                 int rX = Int32.Parse(partesLinea[2]);
@@ -62,6 +64,8 @@ namespace Arqui_MIPS
                 int rZ = Int32.Parse(partesLinea[3]);
 
                 int[] palabra = { codigoOperacion, rX, rY, rZ };
+
+                //Guardar palabra
                 if (!memoria.SetPalabraInstruccion(indiceInstruccion, indicePalabra, palabra))
                 {
                     MessageBox.Show("No hay memoria suficiente para cargar el programa. Intente de nuevo con un programa más pequeño","Error cargando los hilillos", MessageBoxButtons.OK, MessageBoxIcon.Stop);
@@ -72,9 +76,29 @@ namespace Arqui_MIPS
                 Contexto contexto = new Contexto(indiceInstruccion,idContexto);
                 colaContextos.Enqueue(contexto);
 
+                //Aumentar índices
                 indiceInstruccion += 4;
                 indicePalabra++;
                 idContexto++;
+            }
+        }
+
+        private void Simulacion_Load(object sender, EventArgs e)
+        {
+            if (ejecucionLenta)
+            {
+                lblModoLento.Show();
+            }
+        }
+
+        private void Simulacion_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                if (ejecucionLenta)
+                {
+                    MessageBox.Show("Avanza 20 ciclos");
+                }
             }
         }
     }
