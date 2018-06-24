@@ -6,15 +6,17 @@ namespace Arqui_MIPS
     {
         //Parámetros de la clase
         Memoria memoriaPrincipal;
-        //Nucleo n0;
-        //Nucleo n1;
+        Nucleo n0;
+        Nucleo n1;
 
         /*
          * Constructor de la clase
          */
-        public BusInstrucciones(Memoria memoria)
+        public BusInstrucciones(Memoria memoria, Nucleo n0, Nucleo n1)
         {
             memoriaPrincipal = memoria;
+            this.n0 = n0;
+            this.n1 = n1;
         }
 
         /*
@@ -50,11 +52,11 @@ namespace Arqui_MIPS
             int etiqueta = 0;
             if (nucleo == 0)
             {
-                //etiqueta = n0.cacheDatos.GetEtiquetaBloque(iBloque);
+                etiqueta = n0.GetCacheInstrucciones().GetEtiquetaBloque(iBloque);
             }
             else
             {
-                //etiqueta = n1.cacheDatos.GetEtiquetaBloque(iBloque);
+                etiqueta = n1.GetCacheInstrucciones().GetEtiquetaBloque(iBloque);
             }
             return etiqueta;
         }

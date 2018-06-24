@@ -7,6 +7,7 @@
         private readonly int cicloLlegada;
         private int cicloSalida;
         private int quantum;
+        private readonly int quantumInicial;
         private readonly int id;
 
         public Contexto(int PC, int id, int cicloLlegada, int quantum)
@@ -18,6 +19,7 @@
             this.cicloLlegada = cicloLlegada;
             cicloSalida = -1;
             this.quantum = quantum;
+            quantumInicial = quantum;
         }
 
         public int GetPC()
@@ -73,6 +75,11 @@
         public void AumentarPC(int aumento)
         {
             PC += aumento;
+        }
+
+        public void ResetQuantum()
+        {
+            quantum = quantumInicial;
         }
     }
 }

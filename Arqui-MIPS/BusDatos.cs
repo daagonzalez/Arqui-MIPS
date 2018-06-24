@@ -6,15 +6,17 @@ namespace Arqui_MIPS
     {
         //Parámetros de la clase
         Memoria memoriaPrincipal;
-        //Nucleo n0;
-        //Nucleo n1;
+        Nucleo n0;
+        Nucleo n1;
 
         /*
          * Constructor de la clase
          */
-        public BusDatos(Memoria memoria)
+        public BusDatos(Memoria memoria, Nucleo n0, Nucleo n1)
         {
             memoriaPrincipal = memoria;
+            this.n0 = n0;
+            this.n1 = n1;
         }
 
         /*
@@ -50,11 +52,11 @@ namespace Arqui_MIPS
         {
             if (nucleoDestino == 0)
             {
-                //n0.cacheDatos.SetBloque(iBloque,elBloque);
+                n0.GetCacheDatos().SetBloque(iBloque,elBloque);
             }
             else
             {
-                //n1.cacheDatos.SetBloque(iBloque,elBloque);
+               n1.GetCacheDatos().SetBloque(iBloque,elBloque);
             }
         }
 
@@ -65,11 +67,11 @@ namespace Arqui_MIPS
         {
             if (nucleo == 0)
             {
-                //n0.cacheDatos.SetEstadoBloque(iBloque,nEstado);
+                n0.GetCacheDatos().SetEstadoBloque(iBloque,nEstado);
             }
             else
             {
-                //n1.cacheDatos.SetEstadoBloque(iBloque,nEstado);
+                n1.GetCacheDatos().SetEstadoBloque(iBloque,nEstado);
             }
         }
 
@@ -81,11 +83,11 @@ namespace Arqui_MIPS
             BloqueCacheDatos.Estado estado = BloqueCacheDatos.Estado.I;
             if (nucleo == 0)
             {
-                //estado = n0.cacheDatos.GetEstadoBloque(iBloque);
+                estado = n0.GetCacheDatos().GetEstadoBloque(iBloque);
             }
             else
             {
-                //estado = n1.cacheDatos.GetEstadoBloque(iBloque);
+                estado = n1.GetCacheDatos().GetEstadoBloque(iBloque);
             }
             return estado;
         }
@@ -98,11 +100,11 @@ namespace Arqui_MIPS
             int etiqueta = 0;
             if (nucleo == 0)
             {
-                //etiqueta = n0.cacheDatos.GetEtiquetaBloque(iBloque);
+                etiqueta = n0.GetCacheDatos().GetEtiquetaBloque(iBloque);
             }
             else
             {
-                //etiqueta = n1.cacheDatos.GetEtiquetaBloque(iBloque);
+                etiqueta = n1.GetCacheDatos().GetEtiquetaBloque(iBloque);
             }
             return etiqueta;
         }
