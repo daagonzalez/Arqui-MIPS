@@ -2,7 +2,7 @@
 {
     class CacheDatos
     {
-        private const int CANTIDAD_BLOQUES = 8; //Corroborar
+        public const int CANTIDAD_BLOQUES = 8; //Corroborar
         BloqueCacheDatos[] bloques;
 
         /*
@@ -59,6 +59,18 @@
          public int GetEtiquetaBloque(int iBloque)
         {
             return bloques[iBloque].GetEtiqueta();
+        }
+
+        /*
+         * GetPalabraBloque En la caché de datos, retornar la palabra iPalabra del bloque iBloque
+         * 
+         * @param int Indice del arreglo de bloques cuya etiqueta se va a consultar
+         * @param int Indice de la palabra que se va a consultar
+         * @return int
+         */
+        public int GetPalabraBloque(int iBloque, int iPalabra)
+        {
+            return bloques[iBloque].GetPalabra(iPalabra);
         }
 
 

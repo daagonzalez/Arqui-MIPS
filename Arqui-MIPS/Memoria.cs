@@ -1,6 +1,6 @@
 ﻿namespace Arqui_MIPS
 {
-    class Memoria
+    public class Memoria
     {
         //Constantes
         public const int TAMANO_MEMORIA_DATOS = 24;
@@ -32,7 +32,7 @@
             }
         }
 
-        public static string PrintInstrucciones()
+        public string Print() //WIP
         {
             string res = "";
             foreach (BloqueInstruccion bi in memoriaInstrucciones)

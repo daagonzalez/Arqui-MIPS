@@ -39,8 +39,11 @@ namespace Arqui_MIPS
             quantum = quantumIngresado;
             ejecucionLenta = lenta;
             CargarInstrucciones();
-            Resultados fRes = new Resultados();
-            fRes.Show();
+
+            //TEST
+                Resultados fRes = new Resultados(contextosTerminados);
+                fRes.Show();
+            //TEST
         }
 
         /*

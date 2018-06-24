@@ -1,6 +1,6 @@
 ﻿namespace Arqui_MIPS
 {
-    class Contexto
+    public class Contexto
     {
         private int PC;
         private int[] registros;

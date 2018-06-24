@@ -1,6 +1,6 @@
 ﻿namespace Arqui_MIPS
 {
-    class Nucleo
+    public class Nucleo
     {
         Contexto contextoEnEjecucion;
         BusDatos busDatos;

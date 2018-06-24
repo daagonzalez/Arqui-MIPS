@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lbRegistrosN0 = new System.Windows.Forms.ListBox();
-            this.lblCiclosN0 = new System.Windows.Forms.Label();
+            this.lbRegistros = new System.Windows.Forms.ListBox();
+            this.lblCiclos = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tbMemoria = new System.Windows.Forms.TextBox();
@@ -50,7 +50,7 @@
             this.tbCache1Valores = new System.Windows.Forms.TextBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnFin = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbHilillos = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -61,39 +61,39 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.comboBox1);
-            this.groupBox1.Controls.Add(this.lbRegistrosN0);
-            this.groupBox1.Controls.Add(this.lblCiclosN0);
+            this.groupBox1.Controls.Add(this.cbHilillos);
+            this.groupBox1.Controls.Add(this.lbRegistros);
+            this.groupBox1.Controls.Add(this.lblCiclos);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(16, 15);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox1.Size = new System.Drawing.Size(320, 461);
+            this.groupBox1.Size = new System.Drawing.Size(320, 538);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Datos del Hilillo";
             // 
-            // lbRegistrosN0
+            // lbRegistros
             // 
-            this.lbRegistrosN0.FormattingEnabled = true;
-            this.lbRegistrosN0.ItemHeight = 16;
-            this.lbRegistrosN0.Location = new System.Drawing.Point(29, 145);
-            this.lbRegistrosN0.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.lbRegistrosN0.Name = "lbRegistrosN0";
-            this.lbRegistrosN0.Size = new System.Drawing.Size(257, 308);
-            this.lbRegistrosN0.TabIndex = 7;
+            this.lbRegistros.FormattingEnabled = true;
+            this.lbRegistros.ItemHeight = 16;
+            this.lbRegistros.Location = new System.Drawing.Point(29, 145);
+            this.lbRegistros.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lbRegistros.Name = "lbRegistros";
+            this.lbRegistros.Size = new System.Drawing.Size(257, 372);
+            this.lbRegistros.TabIndex = 7;
             // 
-            // lblCiclosN0
+            // lblCiclos
             // 
-            this.lblCiclosN0.AutoSize = true;
-            this.lblCiclosN0.Location = new System.Drawing.Point(153, 97);
-            this.lblCiclosN0.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCiclosN0.Name = "lblCiclosN0";
-            this.lblCiclosN0.Size = new System.Drawing.Size(16, 17);
-            this.lblCiclosN0.TabIndex = 4;
-            this.lblCiclosN0.Text = "#";
+            this.lblCiclos.AutoSize = true;
+            this.lblCiclos.Location = new System.Drawing.Point(153, 97);
+            this.lblCiclos.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCiclos.Name = "lblCiclos";
+            this.lblCiclos.Size = new System.Drawing.Size(16, 17);
+            this.lblCiclos.TabIndex = 4;
+            this.lblCiclos.Text = "#";
             // 
             // label4
             // 
@@ -140,7 +140,7 @@
             this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox4.Size = new System.Drawing.Size(336, 250);
+            this.groupBox4.Size = new System.Drawing.Size(336, 327);
             this.groupBox4.TabIndex = 10;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Caché de datos - Núcleo 0";
@@ -149,7 +149,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(4, 178);
+            this.label5.Location = new System.Drawing.Point(4, 260);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(66, 17);
@@ -193,7 +193,7 @@
             // tbCache0Estados
             // 
             this.tbCache0Estados.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.tbCache0Estados.Location = new System.Drawing.Point(8, 198);
+            this.tbCache0Estados.Location = new System.Drawing.Point(8, 280);
             this.tbCache0Estados.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tbCache0Estados.Multiline = true;
             this.tbCache0Estados.Name = "tbCache0Estados";
@@ -209,8 +209,9 @@
             this.tbCache0Valores.Multiline = true;
             this.tbCache0Valores.Name = "tbCache0Valores";
             this.tbCache0Valores.ReadOnly = true;
-            this.tbCache0Valores.Size = new System.Drawing.Size(319, 34);
+            this.tbCache0Valores.Size = new System.Drawing.Size(319, 116);
             this.tbCache0Valores.TabIndex = 12;
+            this.tbCache0Valores.Text = "1\r\n2\r\n3\r\n4\r\n";
             // 
             // groupBox5
             // 
@@ -224,7 +225,7 @@
             this.groupBox5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox5.Size = new System.Drawing.Size(336, 250);
+            this.groupBox5.Size = new System.Drawing.Size(336, 327);
             this.groupBox5.TabIndex = 11;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Caché de datos -  Núcleo 1";
@@ -233,7 +234,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(4, 178);
+            this.label6.Location = new System.Drawing.Point(4, 260);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(66, 17);
@@ -276,7 +277,7 @@
             // tbCache1Estados
             // 
             this.tbCache1Estados.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.tbCache1Estados.Location = new System.Drawing.Point(8, 198);
+            this.tbCache1Estados.Location = new System.Drawing.Point(8, 280);
             this.tbCache1Estados.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tbCache1Estados.Multiline = true;
             this.tbCache1Estados.Name = "tbCache1Estados";
@@ -292,13 +293,13 @@
             this.tbCache1Valores.Multiline = true;
             this.tbCache1Valores.Name = "tbCache1Valores";
             this.tbCache1Valores.ReadOnly = true;
-            this.tbCache1Valores.Size = new System.Drawing.Size(319, 34);
+            this.tbCache1Valores.Size = new System.Drawing.Size(319, 116);
             this.tbCache1Valores.TabIndex = 13;
             // 
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.tbMemoria);
-            this.groupBox6.Location = new System.Drawing.Point(344, 273);
+            this.groupBox6.Location = new System.Drawing.Point(344, 350);
             this.groupBox6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
@@ -310,7 +311,7 @@
             // btnFin
             // 
             this.btnFin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFin.Location = new System.Drawing.Point(468, 484);
+            this.btnFin.Location = new System.Drawing.Point(467, 568);
             this.btnFin.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFin.Name = "btnFin";
             this.btnFin.Size = new System.Drawing.Size(134, 40);
@@ -319,13 +320,16 @@
             this.btnFin.UseVisualStyleBackColor = true;
             this.btnFin.Click += new System.EventHandler(this.btnFin_Click);
             // 
-            // comboBox1
+            // cbHilillos
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(29, 50);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(257, 24);
-            this.comboBox1.TabIndex = 14;
+            this.cbHilillos.FormattingEnabled = true;
+            this.cbHilillos.Items.AddRange(new object[] {
+            "Seleccione un Hilillo..."});
+            this.cbHilillos.Location = new System.Drawing.Point(29, 50);
+            this.cbHilillos.Name = "cbHilillos";
+            this.cbHilillos.Size = new System.Drawing.Size(257, 24);
+            this.cbHilillos.TabIndex = 14;
+            this.cbHilillos.SelectedIndexChanged += new System.EventHandler(this.cbHilillos_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -342,7 +346,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1079, 537);
+            this.ClientSize = new System.Drawing.Size(1079, 618);
             this.Controls.Add(this.btnFin);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
@@ -351,6 +355,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Resultados";
             this.Text = "Resultados";
+            this.Load += new System.EventHandler(this.Resultados_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -366,8 +371,8 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ListBox lbRegistrosN0;
-        private System.Windows.Forms.Label lblCiclosN0;
+        private System.Windows.Forms.ListBox lbRegistros;
+        private System.Windows.Forms.Label lblCiclos;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbMemoria;
@@ -388,6 +393,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnFin;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbHilillos;
     }
 }

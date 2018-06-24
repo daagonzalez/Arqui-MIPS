@@ -39,6 +39,18 @@
             return bloques[iBloque].GetEtiqueta();
         }
 
+        /*
+         * GetPalabraBloque En la caché de instrucciones, retornar la palabra iPalabra del bloque iBloque
+         * 
+         * @param int Indice del arreglo de bloques cuya etiqueta se va a consultar
+         * @param int Indice de la palabra que se va a consultar
+         * @return int[]
+         */
+        public int[] GetPalabraBloque(int iBloque, int iPalabra)
+        {
+            return bloques[iBloque].GetPalabra(iPalabra);
+        }
+
 
         /**
          * Clase para los Bloques
