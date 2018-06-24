@@ -55,42 +55,42 @@ namespace Arqui_MIPS
         {
             if (nucleoDestino == 0)
             {
-                //n0.cacheDatos.SetBloque(iBloque,elBloque); //En la caché de datos, bloque iBloque, colocar elBloque
+                //n0.cacheDatos.SetBloque(iBloque,elBloque);
             }
             else
             {
-                //n1.cacheDatos.SetBloque(iBloque,elBloque); //En la caché de datos, bloque iBloque, colocar elBloque              
+                //n1.cacheDatos.SetBloque(iBloque,elBloque);
             }
         }
 
         /*
          * Modificar estado de un bloque en la caché de un núcleo
          */
-        public void CambiarEstadoBloqueCache(int nucleo, int iBloque, int nEstado)
+        public void CambiarEstadoBloqueCache(int nucleo, int iBloque, BloqueCacheDatos.Estado nEstado)
         {
             if (nucleo == 0)
             {
-                //n0.cacheDatos.SetEstadoBloque(iBloque,nEstado); //En la caché de datos, bloque iBloque, colocar el estado nEstado               
+                //n0.cacheDatos.SetEstadoBloque(iBloque,nEstado);
             }
             else
             {
-                //n1.cacheDatos.SetEstadoBloque(iBloque,nEstado); //En la caché de datos, bloque iBloque, colocar el estado nEstado
+                //n1.cacheDatos.SetEstadoBloque(iBloque,nEstado);
             }
         }
-        
+
         /*
          * Retorna el estado de un bloque en la caché de datos de un núcleo
          */
-        public int GetEstadoBloqueCache(int nucleo, int iBloque)
+        public BloqueCacheDatos.Estado GetEstadoBloqueCache(int nucleo, int iBloque)
         {
-            int estado = 0;
+            BloqueCacheDatos.Estado estado = BloqueCacheDatos.Estado.I;
             if (nucleo == 0)
             {
-                //estado = n0.cacheDatos.GetEstadoBloque(iBloque); //En la caché de datos, retornar el estado del bloque iBloque
+                //estado = n0.cacheDatos.GetEstadoBloque(iBloque);
             }
             else
             {
-                //estado = n1.cacheDatos.GetEstadoBloque(iBloque); //En la caché de datos, retornar el estado del bloque iBloque
+                //estado = n1.cacheDatos.GetEstadoBloque(iBloque);
             }
             return estado;
         }
@@ -103,11 +103,11 @@ namespace Arqui_MIPS
             int etiqueta = 0;
             if (nucleo == 0)
             {
-                //etiqueta = n0.cacheDatos.GetEtiquetaBloque(iBloque); //En la caché de datos, retornar la etiqueta del bloque iBloque
+                //etiqueta = n0.cacheDatos.GetEtiquetaBloque(iBloque);
             }
             else
             {
-                //etiqueta = n1.cacheDatos.GetEtiquetaBloque(iBloque); //En la caché de datos, retornar la etiqueta del bloque iBloque
+                //etiqueta = n1.cacheDatos.GetEtiquetaBloque(iBloque);
             }
             return etiqueta;
         }

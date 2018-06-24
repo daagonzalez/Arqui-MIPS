@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="BusDatos.cs" />
     <Compile Include="CacheDatos.cs" />
+    <Compile Include="CacheInstrucciones.cs" />
     <Compile Include="Contexto.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
