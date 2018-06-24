@@ -39,7 +39,11 @@ namespace Arqui_MIPS
             quantum = quantumIngresado;
             ejecucionLenta = lenta;
             CargarInstrucciones();
-            MessageBox.Show(Memoria.PrintInstrucciones());
+
+            //TEST
+                Resultados fRes = new Resultados(contextosTerminados);
+                fRes.Show();
+            //TEST
         }
 
         /*
@@ -85,7 +89,6 @@ namespace Arqui_MIPS
                     indicePalabra++;                    
                 }                
             }
-            MessageBox.Show("Cantidad de contextos: " + colaContextos.Count());
         }
 
         private void Simulacion_Load(object sender, EventArgs e)

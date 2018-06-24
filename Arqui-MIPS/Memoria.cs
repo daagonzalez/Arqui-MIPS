@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Arqui_MIPS
+﻿namespace Arqui_MIPS
 {
-    class Memoria
+    public class Memoria
     {
         //Constantes
         public const int TAMANO_MEMORIA_DATOS = 24;
@@ -38,7 +32,7 @@ namespace Arqui_MIPS
             }
         }
 
-        public static string PrintInstrucciones()
+        public string Print() //WIP
         {
             string res = "";
             foreach (BloqueInstruccion bi in memoriaInstrucciones)
@@ -59,11 +53,6 @@ namespace Arqui_MIPS
         public int GetPalabraDato(int indMem, int palabra)
         {
             return memoriaDatos[indMem / 16].GetPalabra(palabra);
-        }
-
-        public int GetEstadoDato(int indMem)
-        {
-            return memoriaDatos[indMem / 16].GetEstado();
         }
 
         public int GetEtiquetaDato(int indMem)
@@ -90,10 +79,7 @@ namespace Arqui_MIPS
         {
             memoriaDatos[indMem / 16].SetPalabra(nValor, palabra);
         }
-        public void SetEstadoDato(int indMem, int nEstado)
-        {
-            memoriaDatos[indMem / 16].SetEstado(nEstado);
-        }
+
         public void SetEtiquetaDato(int indMem, int nEtiqueta)
         {
             memoriaDatos[indMem / 16].SetEtiqueta(nEtiqueta);
@@ -122,25 +108,21 @@ namespace Arqui_MIPS
     public class BloqueDato
     {
         int etiqueta;
-        int estado;
         int[] palabras;
 
         public BloqueDato(int etiqueta)
         {
             this.etiqueta = etiqueta;
-            estado = -1;
             palabras = new int[4];
             for (int i = 0; i < 4; i++)
                 palabras[i] = 1;
         }
+
         public void SetEtiqueta(int nEtiqueta)
         {
             etiqueta = nEtiqueta;
         }
-        public void SetEstado(int nEstado)
-        {
-            estado = nEstado;
-        }
+        
         public void SetPalabra(int nPalabra, int i)
         {
             palabras[i] = nPalabra;
@@ -150,10 +132,7 @@ namespace Arqui_MIPS
         {
             return etiqueta;
         }
-        public int GetEstado()
-        {
-            return estado;
-        }
+        
         public int GetPalabra(int i)
         {
             return palabras[i];

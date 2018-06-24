@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Arqui_MIPS
+﻿namespace Arqui_MIPS
 {
-    class Contexto
+    public class Contexto
     {
         private int PC;
         private int[] registros;
         private readonly int cicloLlegada;
         private int cicloSalida;
         private int quantum;
+        private readonly int quantumInicial;
         private readonly int id;
 
         public Contexto(int PC, int id, int cicloLlegada, int quantum)
@@ -24,6 +19,7 @@ namespace Arqui_MIPS
             this.cicloLlegada = cicloLlegada;
             cicloSalida = -1;
             this.quantum = quantum;
+            quantumInicial = quantum;
         }
 
         public int GetPC()
@@ -79,6 +75,11 @@ namespace Arqui_MIPS
         public void AumentarPC(int aumento)
         {
             PC += aumento;
+        }
+
+        public void ResetQuantum()
+        {
+            quantum = quantumInicial;
         }
     }
 }
