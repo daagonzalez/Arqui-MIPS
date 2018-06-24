@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Arqui_MIPS
+﻿namespace Arqui_MIPS
 {
     class CacheDatos
     {
@@ -24,7 +18,7 @@ namespace Arqui_MIPS
         }
 
         /*
-         * SetBloque Colocar elBloque en la caché de datos, bloque iBloque
+         * SetBloque Colocar elBloque en la caché de datos
          * 
          * @param int Indice del arreglo de bloques que se va a modificar
          * @param BloqueCacheDatos Bloque que se va a insertar
