@@ -71,7 +71,7 @@
         {
             quantum--;
         }
-       
+
         public void AumentarPC(int aumento)
         {
             PC += aumento;

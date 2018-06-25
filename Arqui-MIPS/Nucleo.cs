@@ -37,24 +37,24 @@
          * 
          * @return CacheInstrucciones
          */
-        public CacheInstrucciones GetCacheInstrucciones()
-        {
-            return cacheInstrucciones;
-        }
+        //public CacheInstrucciones GetCacheInstrucciones()
+        //{
+         //   return cacheInstrucciones;
+        //}
 
         /*
          * GetCacheDatos Retorna la referencia a la caché de datos
          * 
          * @return CacheDatos
          */
-        public CacheDatos GetCacheDatos()
-        {
-            return cacheDatos;
-        }
+        //public CacheDatos GetCacheDatos()
+        //{
+        //    return cacheDatos;
+        //}
 
         /*
          * DisminuirQuantum Disminuir Quantum del Contexto
-         */ 
+         */
         public void DisminuirQuantum()
         {
             contextoEnEjecucion.DisminuirQuantum();
@@ -76,7 +76,7 @@
         public Contexto GetContextoEnEjecucion()
         {
             contextoEnEjecucion.ResetQuantum();
-            return contextoEnEjecucion;      
+            return contextoEnEjecucion;
         }
 
         /*

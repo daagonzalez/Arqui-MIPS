@@ -6,10 +6,9 @@ using System.Threading;
 
 namespace Arqui_MIPS
 {
-    // esta es la clase para el procesador de 1 núcleo.
+    // esta es la clase para el nucleo 1, de 1 hilo. Tambien se usara para el nucleo 0, que ahora solo sera de 1 hilo.
     class Procesador1
     {
-
         public const int CantidadRegistros = 32;
 
         public const int EstadoInvalido = 0;
@@ -28,8 +27,8 @@ namespace Arqui_MIPS
         public int Id, CicloActual;
         public List<Contexto> Contextos, ContextosFinalizados;
 
-        public int[][] CacheDatos;
-        public int[][] CacheInstrucc;
+        public int[,] CacheDatos;
+        public int[,] CacheInstrucciones;
 
         // Struct para representar una direccion de memoria
         public struct Direccion
@@ -49,8 +48,8 @@ namespace Arqui_MIPS
             tamCacheInstColumnas = tamInstColumnas;
             Quantum = quantumRec;
 
-
             CacheDatos = new int[tamDatFilas,tamDatColumnas];
+            CacheInstrucciones = new int[tamInstFilas, tamInstColumnas];
         }
 
         /// Genera la instrucción bonita basado en los códigos de operación
