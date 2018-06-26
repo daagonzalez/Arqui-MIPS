@@ -41,7 +41,7 @@ namespace Arqui_MIPS
                 bloqueCache.SetPalabra(i, memoriaPrincipal.GetPalabraDato(dirInicial, i));
             }
             bloqueCache.SetEtiqueta(memoriaPrincipal.GetEtiquetaDato(dirInicial));
-            bloqueCache.SetEstado(BloqueCacheDatos.Estado.C); //Creo que siempre se cargan compartidos
+            bloqueCache.SetEstado(BloqueCacheDatos.Estado.C);   //Siempre se cargan compartidos
             return bloqueCache;
         }
 

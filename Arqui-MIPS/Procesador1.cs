@@ -50,6 +50,25 @@ namespace Arqui_MIPS
 
             CacheDatos = new int[tamDatFilas,tamDatColumnas];
             CacheInstrucciones = new int[tamInstFilas, tamInstColumnas];
+
+            for(int i = 0; i < tamDatFilas; ++i) 
+            {
+                for(int j =0; i < tamDatColumnas; ++j)
+                {
+                    CacheDatos[i, j] = 0; // estado invalido tambien es 0 por lo que no me preocupo por ello todavia.
+                }
+            }
+
+            for (int i = 0; i < tamInstFilas; ++i)
+            {
+                for (int j = 0; i < tamInstColumnas; ++j)
+                {
+                    CacheInstrucciones[i, j] = 0; // estado invalido tambien es 0 por lo que no me preocupo por ello todavia.
+                }
+            }
+
+            Contextos = new List<Contexto>();
+            ContextosFinalizados = new List<Contexto>();
         }
 
         /// Genera la instrucción bonita basado en los códigos de operación
