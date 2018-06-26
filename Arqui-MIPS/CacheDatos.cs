@@ -1,6 +1,6 @@
 ﻿namespace Arqui_MIPS
 {
-    class CacheDatos
+    public class CacheDatos
     {
         public const int CANTIDAD_BLOQUES = 8; //Corroborar . Son 8 bloques para nucleo 0 y 4 bloques para bloque 1.
         BloqueCacheDatos[] bloques;

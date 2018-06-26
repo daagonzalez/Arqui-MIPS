@@ -27,6 +27,14 @@ namespace Arqui_MIPS
         private int quantum;
         private bool ejecucionLenta;
 
+        //Nucleos
+        Nucleo n0;
+        Nucleo n1;
+
+        //Buses
+        BusDatos busDatos;
+        BusInstrucciones busInstrucciones;
+
         public Simulacion(List<List<string>> hilillos, int quantumIngresado, bool lenta)
         {
             InitializeComponent();
@@ -40,8 +48,14 @@ namespace Arqui_MIPS
             ejecucionLenta = lenta;
             CargarInstrucciones();
 
+            busDatos = new BusDatos(memoria);
+            busInstrucciones = new BusInstrucciones(memoria);
+
+            n0 = new Nucleo(busDatos, busInstrucciones, 0);
+            n1 = new Nucleo(busDatos, busInstrucciones, 1);
+
             //TEST
-                Resultados fRes = new Resultados(contextosTerminados);
+                Resultados fRes = new Resultados(contextosTerminados,n0,n1,memoria);
                 fRes.Show();
             //TEST
         }

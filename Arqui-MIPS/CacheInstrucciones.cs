@@ -1,6 +1,6 @@
 ﻿namespace Arqui_MIPS
 {
-    class CacheInstrucciones
+    public class CacheInstrucciones
     {
         private const int CANTIDAD_BLOQUES = 8; //Corroborar
         BloqueCacheInstrucciones[] bloques;

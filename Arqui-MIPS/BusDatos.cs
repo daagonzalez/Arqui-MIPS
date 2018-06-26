@@ -2,7 +2,7 @@
 
 namespace Arqui_MIPS
 {
-    class BusDatos
+    public class BusDatos
     {
         //Parámetros de la clase
         Memoria memoriaPrincipal;
@@ -12,9 +12,16 @@ namespace Arqui_MIPS
         /*
          * Constructor de la clase
          */
-        public BusDatos(Memoria memoria, Nucleo n0, Nucleo n1)
+        public BusDatos(Memoria memoria)
         {
             memoriaPrincipal = memoria;
+        }
+
+        /*
+         * SetNucleos Setea las referencias a los nucleos
+         */
+        public void SetNucleos(Nucleo n0, Nucleo n1)
+        {
             this.n0 = n0;
             this.n1 = n1;
         }
