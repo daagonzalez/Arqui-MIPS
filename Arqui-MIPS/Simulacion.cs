@@ -35,6 +35,9 @@ namespace Arqui_MIPS
         BusDatos busDatos;
         BusInstrucciones busInstrucciones;
 
+        //Reloj
+        int reloj;
+
         public Simulacion(List<List<string>> hilillos, int quantumIngresado, bool lenta)
         {
             InitializeComponent();
@@ -46,13 +49,14 @@ namespace Arqui_MIPS
             this.hilillos = hilillos;
             quantum = quantumIngresado;
             ejecucionLenta = lenta;
+            reloj = 0;
             CargarInstrucciones();
 
             busDatos = new BusDatos(memoria);
             busInstrucciones = new BusInstrucciones(memoria);
-
-            n0 = new Nucleo(busDatos, busInstrucciones, 0);
-            n1 = new Nucleo(busDatos, busInstrucciones, 1);
+            
+            n0 = new Nucleo(busDatos, busInstrucciones, 0, quantumIngresado, ref colaContextos, ref contextosTerminados);
+            n1 = new Nucleo(busDatos, busInstrucciones, 1, quantumIngresado, ref colaContextos, ref contextosTerminados);
 
             //TEST
                 Resultados fRes = new Resultados(contextosTerminados,n0,n1,memoria);
@@ -72,7 +76,7 @@ namespace Arqui_MIPS
             foreach (List<string> lineasHilillos in hilillos)
             {
                 //Crear el contexto y encolarlo en la cola de contextos
-                Contexto contexto = new Contexto(indiceInstruccion, idContexto, 1, quantum); //Un contexto por hilillo
+                Contexto contexto = new Contexto(indiceInstruccion, idContexto, reloj); //Un contexto por hilillo
                 colaContextos.Enqueue(contexto);
                 idContexto++;
 
@@ -115,11 +119,11 @@ namespace Arqui_MIPS
 
         private void Simulacion_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Space)
+            if (ejecucionLenta)
             {
-                if (ejecucionLenta)
+                if (e.KeyCode == Keys.Space)
                 {
-                    MessageBox.Show("Avanza 20 ciclos");
+                        MessageBox.Show("Avanza 20 ciclos");
                 }
             }
         }

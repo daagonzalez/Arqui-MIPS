@@ -6,11 +6,9 @@
         private int[] registros;
         private readonly int cicloLlegada;
         private int cicloSalida;
-        private int quantum;
-        private readonly int quantumInicial;
         private readonly int id;
 
-        public Contexto(int PC, int id, int cicloLlegada, int quantum)
+        public Contexto(int PC, int id, int cicloLlegada)
         {
             this.PC = PC;
             this.id = id;
@@ -18,8 +16,6 @@
             registros[0] = 0;
             this.cicloLlegada = cicloLlegada;
             cicloSalida = -1;
-            this.quantum = quantum;
-            quantumInicial = quantum;
         }
 
         public int GetPC()
@@ -35,11 +31,6 @@
         public int GetDuracion()
         {
             return cicloSalida - cicloLlegada;
-        }
-
-        public int GetQuantum()
-        {
-            return quantum;
         }
 
         public int GetId()
@@ -62,24 +53,9 @@
             this.cicloSalida = cicloSalida;
         }
 
-        public void SetQuantum(int nQuantum)
-        {
-            quantum = nQuantum;
-        }
-
-        public void DisminuirQuantum()
-        {
-            quantum--;
-        }
-
         public void AumentarPC(int aumento)
         {
             PC += aumento;
-        }
-
-        public void ResetQuantum()
-        {
-            quantum = quantumInicial;
         }
     }
 }

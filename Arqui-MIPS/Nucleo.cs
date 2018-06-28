@@ -1,4 +1,6 @@
-﻿namespace Arqui_MIPS
+﻿using System.Collections.Generic;
+
+namespace Arqui_MIPS
 {
     public class Nucleo
     {
@@ -8,28 +10,33 @@
         CacheDatos cacheDatos;
         CacheInstrucciones cacheInstrucciones;
         int identificador;
+        int quantum;
+        Queue<Contexto> colaContextos;
+        List<Contexto> contextosTerminados;
 
         /*
          * Constructor de la clase
          */
-        public Nucleo(BusDatos bd, BusInstrucciones bi, int id)
+        public Nucleo(BusDatos bd, BusInstrucciones bi, int id, int quantumInicial, ref Queue<Contexto> colaContextos, ref List<Contexto> contextosTerminados)
         {
             busDatos = bd;
             busInstrucciones = bi;
             identificador = id;
+            quantum = quantumInicial;
+            this.colaContextos = colaContextos;
+            this.contextosTerminados = contextosTerminados;
 
             cacheDatos = new CacheDatos();
             cacheInstrucciones = new CacheInstrucciones();
         }
 
         /*
-         * SetContextoEnEjecucion Recibe el contexto que se va a ejecutar y lo almacena en la variable respectiva
+         * SetContextoEnEjecucion Desencola el contexto a ejecutar y lo almacena en la variable respectiva
          * 
-         * @param Contexto contexto a ejecutar
          */
-        public void SetContextoEnEjecucion(Contexto elContexto)
+        public void SetContextoEnEjecucion()
         {
-            contextoEnEjecucion = elContexto;
+            contextoEnEjecucion = colaContextos.Dequeue();
         }
 
         /*
@@ -53,11 +60,11 @@
         }
 
         /*
-         * DisminuirQuantum Disminuir Quantum del Contexto
+         * DisminuirQuantum Disminuir el Quantum actual
          */
         public void DisminuirQuantum()
         {
-            contextoEnEjecucion.DisminuirQuantum();
+            quantum--;
         }
 
         /*
@@ -71,12 +78,11 @@
         }
 
         /*
-         * GetContextoEnEjecucion Obtener el contexto actual para enviarlo a la cola de contextos
+         * EncolarContexto Obtener el contexto actual para enviarlo a la cola de contextos
          */
-        public Contexto GetContextoEnEjecucion()
+        public void EncolarContexto()
         {
-            contextoEnEjecucion.ResetQuantum();
-            return contextoEnEjecucion;
+            colaContextos.Enqueue(contextoEnEjecucion);
         }
 
         /*

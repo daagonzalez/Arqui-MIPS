@@ -2,7 +2,7 @@
 {
     public class CacheInstrucciones
     {
-        private const int CANTIDAD_BLOQUES = 8; //Corroborar
+        private const int CANTIDAD_BLOQUES = 4;
         BloqueCacheInstrucciones[] bloques;
 
         /*
