@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HiloPrincipal.cs" />
     <Compile Include="Contexto.cs" />
     <Compile Include="Procesador1.cs" />
     <Compile Include="BusDatos.cs" />

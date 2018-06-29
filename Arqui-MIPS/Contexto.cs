@@ -4,6 +4,7 @@
     {
         private int PC;
         private int[] registros;
+        private const int cantidadRegistros = 32;
         private readonly int cicloLlegada;
         private int cicloSalida;
         private readonly int id;
@@ -12,7 +13,7 @@
         {
             this.PC = PC;
             this.id = id;
-            registros = new int[32];
+            registros = new int[cantidadRegistros];
             registros[0] = 0;
             this.cicloLlegada = cicloLlegada;
             cicloSalida = -1;

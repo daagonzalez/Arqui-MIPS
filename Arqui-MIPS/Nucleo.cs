@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Arqui_MIPS
 {
@@ -9,16 +11,20 @@ namespace Arqui_MIPS
         BusInstrucciones busInstrucciones;
         CacheDatos cacheDatos;
         CacheInstrucciones cacheInstrucciones;
-        int identificador;
-        int quantum;
-        Queue<Contexto> colaContextos;
-        List<Contexto> contextosTerminados;
+
+        // para sincronizacion
+        public Barrier Sync;
+        public int quantum;
+        public int identificador, CicloActual;
+        public Queue<Contexto> colaContextos;
+        public List<Contexto> contextosTerminados;
 
         /*
          * Constructor de la clase
          */
-        public Nucleo(BusDatos bd, BusInstrucciones bi, int id, int quantumInicial, ref Queue<Contexto> colaContextos, ref List<Contexto> contextosTerminados)
+        public Nucleo(Barrier barrera, BusDatos bd, BusInstrucciones bi, int id, int quantumInicial, ref Queue<Contexto> colaContextos, ref List<Contexto> contextosTerminados)
         {
+            Sync = barrera;
             busDatos = bd;
             busInstrucciones = bi;
             identificador = id;
@@ -57,6 +63,11 @@ namespace Arqui_MIPS
         public CacheDatos GetCacheDatos()
         {
             return cacheDatos;
+        }
+
+        internal void Iniciar()
+        {
+            // Se inicia el hilo
         }
 
         /*

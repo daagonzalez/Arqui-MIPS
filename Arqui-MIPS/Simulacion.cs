@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Arqui_MIPS
@@ -38,7 +38,7 @@ namespace Arqui_MIPS
         //Reloj
         int reloj;
 
-        public Simulacion(List<List<string>> hilillos, int quantumIngresado, bool lenta)
+        public Simulacion(List<List<string>> hilillos, int quantumIngresado, bool esDespacio)
         {
             InitializeComponent();
 
@@ -46,20 +46,32 @@ namespace Arqui_MIPS
             colaContextos = new Queue<Contexto>();
             contextosTerminados = new List<Contexto>();
 
+            const int cantidadNucleos = 2;
+
+            var sync = new Barrier(participantCount: cantidadNucleos);
+
             this.hilillos = hilillos;
             quantum = quantumIngresado;
-            ejecucionLenta = lenta;
+            ejecucionLenta = esDespacio; // es lento es true, o false.
             reloj = 0;
             CargarInstrucciones();
 
             busDatos = new BusDatos(memoria);
             busInstrucciones = new BusInstrucciones(memoria);
             
-            n0 = new Nucleo(busDatos, busInstrucciones, 0, quantumIngresado, ref colaContextos, ref contextosTerminados);
-            n1 = new Nucleo(busDatos, busInstrucciones, 1, quantumIngresado, ref colaContextos, ref contextosTerminados);
+            n0 = new Nucleo(sync, busDatos, busInstrucciones, 0, quantumIngresado, ref colaContextos, ref contextosTerminados);
+            n1 = new Nucleo(sync, busDatos, busInstrucciones, 1, quantumIngresado, ref colaContextos, ref contextosTerminados);
 
+            var hiloCpu1 = new Thread(n0.Iniciar);
+            var hiloCpu2 = new Thread(n1.Iniciar);
+
+            hiloCpu1.Start();
+            hiloCpu2.Start();
+
+            hiloCpu1.Join();
+            hiloCpu2.Join();
             //TEST
-                Resultados fRes = new Resultados(contextosTerminados,n0,n1,memoria);
+            Resultados fRes = new Resultados(contextosTerminados,n0,n1,memoria);
                 fRes.Show();
             //TEST
         }
