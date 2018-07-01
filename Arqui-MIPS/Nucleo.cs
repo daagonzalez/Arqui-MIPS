@@ -6,6 +6,8 @@ namespace Arqui_MIPS
 {
     public class Nucleo
     {
+        private const int CICLOS_TRAER_DE_MEMORIA = 40;
+
         Contexto contextoEnEjecucion;
         BusDatos busDatos;
         BusInstrucciones busInstrucciones;
@@ -68,6 +70,129 @@ namespace Arqui_MIPS
         internal void Iniciar()
         {
             // Se inicia el hilo
+            lock (colaContextos)
+            { //Se bloquea para que solo uno de los núcleos a la vez pueda sacar de la cola
+                if (colaContextos.Count > 0)
+                {
+                    contextoEnEjecucion = colaContextos.Dequeue();
+                }
+                //Habría que hacer algo cuando ya no hay contextos para correr
+            }
+
+            while (true)
+            {
+                Run();
+            }
+        }
+
+        /*
+         * Correr Lógica de la ejecución de un hilillo en el procesador
+         * ((WIP))
+        */
+        internal void Run()
+        {
+            /**Fetch de la instrucción**/
+            int[] instruccion = new int[4];
+
+            //Obtener direcciones
+            int pcContexto = contextoEnEjecucion.GetPC();
+            int nBloque = GetNumeroBloque(pcContexto);
+            int nPalabra = GetNumeroPalabra(pcContexto,4);
+            int nBloqueEnCache = GetPosicionCache(nBloque);
+
+            //Revisar la caché de instrucciones
+            //--Creo que no hace falta bloquear la posición de caché ya que el otro núcleo no tiene porque usarla dado que las instrucciones no se modifican
+            if (cacheInstrucciones.GetEtiquetaBloque(nBloqueEnCache) != nBloque)
+            {
+                /**FALLO DE CACHÉ**/
+                //Pedir el bus de instrucciones
+                if (Monitor.TryEnter(busInstrucciones))
+                {
+                    try
+                    {
+                        //Cargar el bloque de memoria a la caché
+                        var bloque = busInstrucciones.BloqueDeMem(nBloque);
+                        cacheInstrucciones.SetBloque(nBloqueEnCache, bloque);
+                        AvanzarReloj(CICLOS_TRAER_DE_MEMORIA);
+                    }
+                    finally
+                    {
+                        //Libera el bus de instrucciones
+                        Monitor.Exit(busInstrucciones);
+                    }
+                }
+                else
+                {
+                    //No se pudo obtener el bus
+                    AvanzarReloj(1);
+                }
+            }
+            instruccion = cacheInstrucciones.GetPalabraBloque(nBloqueEnCache, nPalabra);
+            EjecutarInstruccion(instruccion[0], instruccion[1], instruccion[2], instruccion[3]);
+        }
+
+        private void EjecutarInstruccion(int codigoOp, int rx, int ry, int rz)
+        {
+            switch (codigoOp)
+            {
+                case 8:
+                    //DADDI
+                    break;
+                case 32:
+                    //DADD
+                    break;
+                case 34:
+                    //DSUB
+                    break;
+                case 12:
+                    //DMUL
+                    break;
+                case 14:
+                    //DDIV
+                    break;
+                case 4:
+                    //BEQZ
+                    break;
+                case 5:
+                    //BNEZ
+                    break;
+                case 3:
+                    //JAL
+                    break;
+                case 2:
+                    //JR
+                    break;
+                case 35:
+                    //LW
+                    break;
+                case 43:
+                    //SW
+                    break;
+                case 63:
+                    //FIN
+                    break;
+            }
+        }
+
+        private void AvanzarReloj(int ciclos)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetNumeroBloque(int direccion)
+        {
+            return (direccion / 16);
+        }
+
+        public int GetNumeroPalabra(int direccion, int tamannoCache)
+        {
+            int temp = direccion % 16;
+            return (temp / tamannoCache);
+        }
+
+        public int GetPosicionCache(int numeroBloque)
+        {
+            return (numeroBloque % 4);
         }
 
         /*

@@ -50,58 +50,59 @@
          * Getters
          */
         //Memoria de datos
-        public int GetPalabraDato(int indMem, int palabra)
+        public int GetPalabraDato(int bloque, int palabra)
         {
-            return memoriaDatos[indMem / 16].GetPalabra(palabra);
+            return memoriaDatos[bloque].GetPalabra(palabra);
         }
 
-        public int GetEtiquetaDato(int indMem)
+        public int GetEtiquetaDato(int bloque)
         {
-            return memoriaDatos[indMem / 16].GetEtiqueta();
+            return memoriaDatos[bloque].GetEtiqueta();
         }
 
         //Memoria de instrucciones
-        public int[] GetPalabraInstruccion(int indMem, int palabra)
+        public int[] GetPalabraInstruccion(int bloque, int palabra)
         {
-            return memoriaInstrucciones[(indMem / 16) - TAMANO_MEMORIA_DATOS].GetPalabra(palabra);
+            return memoriaInstrucciones[(bloque) - TAMANO_MEMORIA_DATOS].GetPalabra(palabra);
         }
 
-        public int GetEtiquetaInstruccion(int indMem)
+        public int GetEtiquetaInstruccion(int bloque)
         {
-            return memoriaInstrucciones[(indMem / 16) - TAMANO_MEMORIA_DATOS].GetEtiqueta();
+            return memoriaInstrucciones[(bloque) - TAMANO_MEMORIA_DATOS].GetEtiqueta();
         }
 
+        
         /*
          * Setters
          */
-         //Memoria de datos
-        public void SetPalabraDato(int indMem, int palabra, int nValor)
+        //Memoria de datos
+        public void SetPalabraDato(int bloque, int palabra, int nValor)
         {
-            memoriaDatos[indMem / 16].SetPalabra(nValor, palabra);
+            memoriaDatos[bloque].SetPalabra(nValor, palabra);
         }
 
-        public void SetEtiquetaDato(int indMem, int nEtiqueta)
+        public void SetEtiquetaDato(int bloque, int nEtiqueta)
         {
-            memoriaDatos[indMem / 16].SetEtiqueta(nEtiqueta);
+            memoriaDatos[bloque].SetEtiqueta(nEtiqueta);
         }
 
         //Memoria de instrucciones
         /*
          *@return bool true si se pudo guardar la palabra y false si no. 
          */
-        public bool SetPalabraInstruccion(int indMem, int palabra, int[] nValor)
+        public bool SetPalabraInstruccion(int bloque, int palabra, int[] nValor)
         {
-            if ((indMem / 16) - TAMANO_MEMORIA_DATOS >= TAMANO_MEMORIA_INSTRUCCIONES)
+            if ((bloque) - TAMANO_MEMORIA_DATOS >= TAMANO_MEMORIA_INSTRUCCIONES)
             {
                 return false;
             }
-            memoriaInstrucciones[(indMem / 16) - TAMANO_MEMORIA_DATOS].SetPalabra(nValor, palabra);
+            memoriaInstrucciones[(bloque) - TAMANO_MEMORIA_DATOS].SetPalabra(nValor, palabra);
             return true;
         }
 
-        public void SetEtiquetaInstruccion(int indMem, int nEtiqueta)
+        public void SetEtiquetaInstruccion(int bloque, int nEtiqueta)
         {
-            memoriaInstrucciones[(indMem / 16) - TAMANO_MEMORIA_DATOS].SetEtiqueta(nEtiqueta);
+            memoriaInstrucciones[(bloque) - TAMANO_MEMORIA_DATOS].SetEtiqueta(nEtiqueta);
         }
     }
 

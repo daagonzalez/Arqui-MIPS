@@ -29,25 +29,25 @@ namespace Arqui_MIPS
         /*
          * Escribir bloque de caché a memoria
          */
-        public void BloqueAMem(BloqueCacheInstrucciones bloqueCache, int dirInicial)
+        public void BloqueAMem(BloqueCacheInstrucciones bloqueCache, int nBloque)
         {
             for (int i = 0; i < 4; i++)
             {
-                memoriaPrincipal.SetPalabraInstruccion(dirInicial, i, bloqueCache.GetPalabra(i));
+                memoriaPrincipal.SetPalabraInstruccion(nBloque, i, bloqueCache.GetPalabra(i));
             }
         }
 
         /*
          * Leer bloque de memoria
          */
-        public BloqueCacheInstrucciones BloqueDeMem(int dirInicial)
+        public BloqueCacheInstrucciones BloqueDeMem(int nBloque)
         {
             BloqueCacheInstrucciones bloqueCache = new BloqueCacheInstrucciones();
             for (int i = 0; i < 4; i++)
             {
-                bloqueCache.SetPalabra(i, memoriaPrincipal.GetPalabraInstruccion(dirInicial, i));
+                bloqueCache.SetPalabra(i, memoriaPrincipal.GetPalabraInstruccion(nBloque, i));
             }
-            bloqueCache.SetEtiqueta(memoriaPrincipal.GetEtiquetaDato(dirInicial));
+            bloqueCache.SetEtiqueta(memoriaPrincipal.GetEtiquetaDato(nBloque));
             return bloqueCache;
         }
         

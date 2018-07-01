@@ -14,6 +14,7 @@ namespace Arqui_MIPS
     {
         //Constantes
         private const int DIRECCION_INICIO_INSTRUCCION = 384;
+        private const int CANTIDAD_NUCLEOS = 2;
 
         //Memoria
         Memoria memoria;
@@ -46,13 +47,11 @@ namespace Arqui_MIPS
             colaContextos = new Queue<Contexto>();
             contextosTerminados = new List<Contexto>();
 
-            const int cantidadNucleos = 2;
-
-            var sync = new Barrier(participantCount: cantidadNucleos);
+            var sync = new Barrier(participantCount: CANTIDAD_NUCLEOS);
 
             this.hilillos = hilillos;
             quantum = quantumIngresado;
-            ejecucionLenta = esDespacio; // es lento es true, o false.
+            ejecucionLenta = esDespacio; // ejecución lenta = true; ejecución rápida = false.
             reloj = 0;
             CargarInstrucciones();
 
@@ -108,7 +107,8 @@ namespace Arqui_MIPS
                     int[] palabra = { codigoOperacion, rX, rY, rZ };
 
                     //Guardar palabra
-                    if (!memoria.SetPalabraInstruccion(indiceInstruccion, indicePalabra, palabra))
+                    int bloqueDestino = memoria.GetNumeroBloque(indiceInstruccion);
+                    if (!memoria.SetPalabraInstruccion(bloqueDestino, indicePalabra, palabra))
                     {
                         MessageBox.Show("No hay memoria suficiente para cargar el programa. Intente de nuevo con un programa más pequeño","Error cargando los hilillos", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                         Application.Exit();
@@ -135,7 +135,7 @@ namespace Arqui_MIPS
             {
                 if (e.KeyCode == Keys.Space)
                 {
-                        MessageBox.Show("Avanza 20 ciclos");
+                    MessageBox.Show("Avanza 20 ciclos");
                 }
             }
         }

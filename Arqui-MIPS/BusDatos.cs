@@ -29,25 +29,25 @@ namespace Arqui_MIPS
         /*
          * Escribir bloque de caché a memoria
          */
-        public void BloqueAMem(BloqueCacheDatos bloqueCache, int dirInicial)
+        public void BloqueAMem(BloqueCacheDatos bloqueCache, int nBloque)
         {
             for (int i = 0; i < 4; i++)
             {
-                memoriaPrincipal.SetPalabraDato(dirInicial, i, bloqueCache.GetPalabra(i));
+                memoriaPrincipal.SetPalabraDato(nBloque, i, bloqueCache.GetPalabra(i));
             }
         }
 
         /*
          * Leer bloque de memoria
          */
-        public BloqueCacheDatos BloqueDeMem(int dirInicial)
+        public BloqueCacheDatos BloqueDeMem(int nBloque)
         {
             BloqueCacheDatos bloqueCache = new BloqueCacheDatos();
             for (int i = 0; i < 4; i++)
             {
-                bloqueCache.SetPalabra(i, memoriaPrincipal.GetPalabraDato(dirInicial, i));
+                bloqueCache.SetPalabra(i, memoriaPrincipal.GetPalabraDato(nBloque, i));
             }
-            bloqueCache.SetEtiqueta(memoriaPrincipal.GetEtiquetaDato(dirInicial));
+            bloqueCache.SetEtiqueta(memoriaPrincipal.GetEtiquetaDato(nBloque));
             bloqueCache.SetEstado(BloqueCacheDatos.Estado.C);   //Siempre se cargan compartidos
             return bloqueCache;
         }
