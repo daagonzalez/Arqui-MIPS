@@ -15,6 +15,8 @@ namespace Arqui_MIPS
         CacheDatos cacheDatos;
         CacheInstrucciones cacheInstrucciones;
 
+        public List<Nucleo> nucleos { get; set; }       // // para revisar las otras caches
+
         // para sincronizacion
         public Barrier Sync;
         public int quantum;
@@ -34,6 +36,8 @@ namespace Arqui_MIPS
             quantum = quantumInicial;
             this.colaContextos = colaContextos;
             this.contextosTerminados = contextosTerminados;
+
+            nucleos = new List<Nucleo>();
 
             cacheDatos = new CacheDatos();
             cacheInstrucciones = new CacheInstrucciones();
@@ -183,8 +187,8 @@ namespace Arqui_MIPS
                     */
                     if (contPrincipal.GetRegistro(regFuente1) == 0)
                     {
-                        
                         //salta a la etiqueta indicada por regDest
+                        contPrincipal.AumentarPC(regDest << 2);
                     }
                     break;
                 case 5:
@@ -195,7 +199,7 @@ namespace Arqui_MIPS
                     if (contPrincipal.GetRegistro(regFuente1) != 0)
                     {
                         //salta a la etiqueta indicada por regDest
-                        
+                        contPrincipal.AumentarPC(regDest << 2);
                     }
                     break;
                 case 8:
@@ -252,7 +256,6 @@ namespace Arqui_MIPS
                     /* *
                      * SW RX, n(rY)
                      * m(N+(RY)) = rX
-                     * codOp: 51 RF1: Y RF2 O RD: X RD O IMM: n
                      * */
                     posMem = contPrincipal.GetRegistro(regFuente1) + regDest;
                     int storeRes = StoreWord(posMem, regFuente2);
@@ -260,17 +263,11 @@ namespace Arqui_MIPS
                 case 50:
                     /* *
                      * LL Rx, n(Ry) Load conditional
-                     * Rx <- M(n + (Ry))
-                     * Rl <- n+(Ry)
-                     * codOp: 50 RF1: Y RF2 O RD: X RD O IMM: n
                      * */
                     break;
                 case 51:
                     /* *
                      * SC RX, n(rY) Store conditional
-                     * IF (rl = N+(Ry)) => m(N+(RY)) = rX
-                     * ELSE Rx =0
-                     *  codOp: 51 RF1: Y RF2 O RD: X RD O IMM: n
                      * */
                     break;
                 case 63:
@@ -288,7 +285,10 @@ namespace Arqui_MIPS
 
         private int StoreWord(int posMem, int regFuente2)
         {
-            throw new NotImplementedException();
+            int exito = 0;
+
+
+            return exito;
         }
 
         private int LoadWord(int regFuente2, int posMem)
