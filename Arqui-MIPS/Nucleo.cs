@@ -70,19 +70,30 @@ namespace Arqui_MIPS
         internal void Iniciar()
         {
             // Se inicia el hilo
-            lock (colaContextos)
-            { //Se bloquea para que solo uno de los núcleos a la vez pueda sacar de la cola
-                if (colaContextos.Count > 0)
-                {
-                    contextoEnEjecucion = colaContextos.Dequeue();
-                }
-                //Habría que hacer algo cuando ya no hay contextos para correr
-            }
-
-            while (true)
+            // mientras todavía existan contextos en la cola. Debo pensar en el manejo de esta cola          
+            while (colaContextos.Count > 0)
             {
-                Run();
+                Sync.SignalAndWait();
+
+                contextoEnEjecucion = colaContextos.Dequeue();
+                var pc = contextoEnEjecucion.GetPC();
+                //var posicion = contextoEnEjecucion.
+
+                Sync.RemoveParticipant();
             }
+            //lock (colaContextos)
+            // { //Se bloquea para que solo uno de los núcleos a la vez pueda sacar de la cola
+            //    if (colaContextos.Count > 0)
+            //    {
+            //        contextoEnEjecucion = colaContextos.Dequeue();
+            //    }
+                //Habría que hacer algo cuando ya no hay contextos para correr
+            //}
+
+            //while (true)
+            //{
+              //  Run();
+            //}
         }
 
         /*
@@ -124,54 +135,164 @@ namespace Arqui_MIPS
                 else
                 {
                     //No se pudo obtener el bus
-                    AvanzarReloj(1);
+                    AvanzarReloj(1);    // avanzar reloj es del hilo principal.
                 }
             }
             instruccion = cacheInstrucciones.GetPalabraBloque(nBloqueEnCache, nPalabra);
-            EjecutarInstruccion(instruccion[0], instruccion[1], instruccion[2], instruccion[3]);
+            ManejoInstrucciones(instruccion);
         }
 
-        private void EjecutarInstruccion(int codigoOp, int rx, int ry, int rz)
+        public bool ManejoInstrucciones(int[] instruccion)
         {
-            switch (codigoOp)
+            bool res = false;
+
+            int codigoInstruccion = instruccion[0],
+                regFuente1 = instruccion[1],
+                regFuente2 = instruccion[2],
+                regDest = instruccion[3],
+                posMem;
+
+            Contexto contPrincipal = colaContextos.Dequeue();
+            string output = "";         //debug
+            int pc = contPrincipal.GetPC();
+            int nBloque = GetNumeroBloque(pc);
+            int nPalabra = GetNumeroPalabra(pc, 4);
+
+            switch (codigoInstruccion)
             {
-                case 8:
-                    //DADDI
-                    break;
-                case 32:
-                    //DADD
-                    break;
-                case 34:
-                    //DSUB
-                    break;
-                case 12:
-                    //DMUL
-                    break;
-                case 14:
-                    //DDIV
-                    break;
-                case 4:
-                    //BEQZ
-                    break;
-                case 5:
-                    //BNEZ
+                case 2:
+                    /*
+                    JR RX: PC=RX
+                    CodOp: 2 RF1: X RF2 O RD: 0 RD o IMM:0
+                    */
+                    contPrincipal.SetPC(regFuente1);
                     break;
                 case 3:
-                    //JAL
+                    /*
+                    JAL n, R31=PC, PC = PC+n
+                    CodOp: 3 RF1: 0 RF2 O RD: 0 RD o IMM:n
+                    */
+                    contPrincipal.SetRegistro(31, pc);
+                    contPrincipal.AumentarPC(regDest);
                     break;
-                case 2:
-                    //JR
+                case 4:
+                    /*
+                    BEQZ RX, ETIQ : Si RX = 0 salta 
+                    CodOp: 4 RF1: Y RF2 O RD: 0 RD o IMM:n
+                    */
+                    if (contPrincipal.GetRegistro(regFuente1) == 0)
+                    {
+                        
+                        //salta a la etiqueta indicada por regDest
+                    }
+                    break;
+                case 5:
+                    /*
+                     BEQNZ RX, ETIQ : Si RX != 0 salta 
+                     CodOp: 5 RF1: x RF2 O RD: 0 RD o IMM:n
+                     */
+                    if (contPrincipal.GetRegistro(regFuente1) != 0)
+                    {
+                        //salta a la etiqueta indicada por regDest
+                        
+                    }
+                    break;
+                case 8:
+                    /*
+                    DADDI RX, RY, #n : Rx <-- (Ry) + n
+                    CodOp: 8 RF1: Y RF2 O RD: x RD O IMM:n
+                    */
+                    contPrincipal.SetRegistro(regFuente2, contPrincipal.GetRegistro(regFuente1) + regDest);
+                    break;
+                case 12:
+                    /*
+                    DMUL RX, RY, #n : Rx <-- (Ry) * (Rz)
+                    CodOp: 12 RF1: Y RF2 O RD: z RD o IMM:X
+                    */
+                    contPrincipal.SetRegistro(regDest,contPrincipal.GetRegistro(regFuente1) * contPrincipal.GetRegistro(regFuente2));
+
+                    break;
+                case 14:
+                    /*
+                    DDIV RX, RY, #n : Rx <-- (Ry) / (Rz)
+                    CodOp: 14 RF1: Y RF2 O RD: z RD o IMM:X
+                    */
+                    contPrincipal.SetRegistro(regDest,contPrincipal.GetRegistro(regFuente1) / contPrincipal.GetRegistro(regFuente2));
+
+                    break;
+                case 32:
+                    /*
+                    DADD RX, RY, #n : Rx <-- (Ry) + (Rz)
+                    CodOp: 32 RF1: Y RF2 O RD: x RD o IMM:Rz
+                    */
+                    contPrincipal.SetRegistro(regDest, contPrincipal.GetRegistro(regFuente1) + contPrincipal.GetRegistro(regFuente2));
+
+                    break;
+                case 34:
+                    /*
+                    DSUB RX, RY, #n : Rx <-- (Ry) - (Rz)
+                    CodOp: 34 RF1: Y RF2 O RD: z RD o IMM:X
+                    */
+                    contPrincipal.SetRegistro(regDest, contPrincipal.GetRegistro(regFuente1) - contPrincipal.GetRegistro(regFuente2));
+
                     break;
                 case 35:
-                    //LW
+                    /* *
+                    * LW Rx, n(Ry)
+                    * Rx <- M(n + (Ry))
+                    * 
+                    * codOp: 35 RF1: Y RF2 O RD: X RD O IMM: n
+                    * */
+                    posMem = contPrincipal.GetRegistro(regFuente1) + regDest;
+                    int loadRes = LoadWord(regFuente2, posMem);
+
                     break;
                 case 43:
-                    //SW
+                    /* *
+                     * SW RX, n(rY)
+                     * m(N+(RY)) = rX
+                     * codOp: 51 RF1: Y RF2 O RD: X RD O IMM: n
+                     * */
+                    posMem = contPrincipal.GetRegistro(regFuente1) + regDest;
+                    int storeRes = StoreWord(posMem, regFuente2);
+                    break;
+                case 50:
+                    /* *
+                     * LL Rx, n(Ry) Load conditional
+                     * Rx <- M(n + (Ry))
+                     * Rl <- n+(Ry)
+                     * codOp: 50 RF1: Y RF2 O RD: X RD O IMM: n
+                     * */
+                    break;
+                case 51:
+                    /* *
+                     * SC RX, n(rY) Store conditional
+                     * IF (rl = N+(Ry)) => m(N+(RY)) = rX
+                     * ELSE Rx =0
+                     *  codOp: 51 RF1: Y RF2 O RD: X RD O IMM: n
+                     * */
                     break;
                 case 63:
-                    //FIN
+                    /*
+                     fin
+                     CodOp: 63 RF1: 0 RF2 O RD: 0 RD o IMM:0
+                     */
+                    res = true;
                     break;
             }
+            contPrincipal.AumentarPC(4);
+
+            return res;
+        }
+
+        private int StoreWord(int posMem, int regFuente2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private int LoadWord(int regFuente2, int posMem)
+        {
+            throw new NotImplementedException();
         }
 
         private void AvanzarReloj(int ciclos)

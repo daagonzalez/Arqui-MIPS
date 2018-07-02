@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -47,11 +42,11 @@ namespace Arqui_MIPS
             colaContextos = new Queue<Contexto>();
             contextosTerminados = new List<Contexto>();
 
-            var sync = new Barrier(participantCount: CANTIDAD_NUCLEOS);
+            var sync = new Barrier(participantCount: CANTIDAD_NUCLEOS);     //Barrera para sincronizar
 
             this.hilillos = hilillos;
             quantum = quantumIngresado;
-            ejecucionLenta = esDespacio; // ejecución lenta = true; ejecución rápida = false.
+            ejecucionLenta = esDespacio;    // ejecución lenta = true; ejecución rápida = false.
             reloj = 0;
             CargarInstrucciones();
 

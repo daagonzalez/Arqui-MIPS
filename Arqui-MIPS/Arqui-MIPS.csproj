@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contexto.cs" />
-    <Compile Include="Procesador1.cs" />
     <Compile Include="BusDatos.cs" />
     <Compile Include="BusInstrucciones.cs" />
     <Compile Include="CacheDatos.cs" />
