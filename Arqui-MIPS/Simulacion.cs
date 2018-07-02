@@ -70,6 +70,11 @@ namespace Arqui_MIPS
             //TEST
         }
 
+        public int GetNumeroBloque(int direccion)
+        {
+            return (direccion / 16);
+        }
+
         /*
          * Carga las instrucciones en la memoria y crea los contextos para cada hilillo
          * Si no hay espacio suficiente, muestra un error y termina la ejecución de la simulación
@@ -102,7 +107,7 @@ namespace Arqui_MIPS
                     int[] palabra = { codigoOperacion, rX, rY, rZ };
 
                     //Guardar palabra
-                    int bloqueDestino = memoria.GetNumeroBloque(indiceInstruccion);
+                    int bloqueDestino = GetNumeroBloque(indiceInstruccion);
                     if (!memoria.SetPalabraInstruccion(bloqueDestino, indicePalabra, palabra))
                     {
                         MessageBox.Show("No hay memoria suficiente para cargar el programa. Intente de nuevo con un programa más pequeño","Error cargando los hilillos", MessageBoxButtons.OK, MessageBoxIcon.Stop);
