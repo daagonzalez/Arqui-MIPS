@@ -82,7 +82,7 @@ namespace Arqui_MIPS
 
                 contextoEnEjecucion = colaContextos.Dequeue();
                 var pc = contextoEnEjecucion.GetPC();
-                //var posicion = contextoEnEjecucion.
+                Run();
 
                 Sync.RemoveParticipant();
             }
@@ -381,7 +381,7 @@ namespace Arqui_MIPS
                                                 }
                                                 finally
                                                 {
-                                                    Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache);
+                                                    Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache));
                                                 }
                                             }
                                             else
