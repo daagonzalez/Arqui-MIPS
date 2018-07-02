@@ -246,7 +246,7 @@ namespace Arqui_MIPS
                     * */
                     posMem = contPrincipal.GetRegistro(regFuente1) + regDest;
                     int loadRes = LoadWord(regFuente2, posMem);
-
+                    contPrincipal.SetRegistro(regFuente2, loadRes);
                     break;
                 case 43:
                     /* *
