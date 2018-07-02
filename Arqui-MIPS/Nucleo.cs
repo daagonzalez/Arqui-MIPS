@@ -540,7 +540,7 @@ namespace Arqui_MIPS
         {
             for(int i=0; i < ciclos; ciclos++)
             {
-                Sync.SignalAndWait();
+                //Sync.SignalAndWait();
             }
             //Un ciclo for de 0 a 'ciclos', donde cada iteración espera en la barrera para indicarle al hilo principal que le sume 1 al reloj
         }
@@ -574,7 +574,7 @@ namespace Arqui_MIPS
          * 
          * @param int Aumento del PC
          */
-        public void AumentarPCContexto(int aumento = 4)
+        public void AumentarPCContexto(int aumento)
         {
             contextoEnEjecucion.AumentarPC(aumento);
         }
