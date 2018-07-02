@@ -83,21 +83,20 @@ namespace Arqui_MIPS
                 contextoEnEjecucion = colaContextos.Dequeue();
                 var pc = contextoEnEjecucion.GetPC();
                 Run();
-
-                Sync.RemoveParticipant();
             }
+            Sync.RemoveParticipant();
             //lock (colaContextos)
             // { //Se bloquea para que solo uno de los núcleos a la vez pueda sacar de la cola
             //    if (colaContextos.Count > 0)
             //    {
             //        contextoEnEjecucion = colaContextos.Dequeue();
             //    }
-                //Habría que hacer algo cuando ya no hay contextos para correr
+            //Habría que hacer algo cuando ya no hay contextos para correr
             //}
 
             //while (true)
             //{
-              //  Run();
+            //  Run();
             //}
         }
 
@@ -113,7 +112,7 @@ namespace Arqui_MIPS
             //Obtener direcciones
             int pcContexto = contextoEnEjecucion.GetPC();
             int nBloque = GetNumeroBloque(pcContexto);
-            int nPalabra = GetNumeroPalabra(pcContexto,4);
+            int nPalabra = GetNumeroPalabra(pcContexto, 4);
             int nBloqueEnCache = GetPosicionCache(nBloque);
 
             //Revisar la caché de instrucciones
@@ -144,7 +143,21 @@ namespace Arqui_MIPS
                 }
             }
             instruccion = cacheInstrucciones.GetPalabraBloque(nBloqueEnCache, nPalabra);
-            ManejoInstrucciones(instruccion);
+            var res = ManejoInstrucciones(instruccion);
+            if (res)
+            {
+                contextoEnEjecucion.SetCicloSalida(CicloActual);
+                contextosTerminados.Add(contextoEnEjecucion);
+            }
+            else
+            {
+                quantum--;
+                if (quantum == 0)
+                {
+                    colaContextos.Enqueue(contextoEnEjecucion);
+
+                }
+            }
         }
 
         public bool ManejoInstrucciones(int[] instruccion)
@@ -525,7 +538,10 @@ namespace Arqui_MIPS
 
         private void AvanzarReloj(int ciclos)
         {
-            throw new NotImplementedException();
+            for(int i=0; i < ciclos; ciclos++)
+            {
+                Sync.SignalAndWait();
+            }
             //Un ciclo for de 0 a 'ciclos', donde cada iteración espera en la barrera para indicarle al hilo principal que le sume 1 al reloj
         }
 
