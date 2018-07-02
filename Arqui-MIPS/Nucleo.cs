@@ -82,7 +82,7 @@ namespace Arqui_MIPS
 
                 contextoEnEjecucion = colaContextos.Dequeue();
                 var pc = contextoEnEjecucion.GetPC();
-                //var posicion = contextoEnEjecucion.
+                Run();
 
                 Sync.RemoveParticipant();
             }
