@@ -1,4 +1,5 @@
-﻿using static Arqui_MIPS.CacheDatos;
+﻿using System;
+using static Arqui_MIPS.CacheDatos;
 
 namespace Arqui_MIPS
 {
@@ -114,6 +115,15 @@ namespace Arqui_MIPS
                 etiqueta = n1.GetCacheDatos().GetEtiquetaBloque(iBloque);
             }
             return etiqueta;
+        }
+
+        public BloqueCacheDatos GetBloqueCache(int otroNucleo, int nBloque)
+        {
+            if (otroNucleo == 0)
+            {
+                return n0.GetCacheDatos().GetBloque(nBloque);
+            }
+            return n1.GetCacheDatos().GetBloque(nBloque);
         }
     }
 }

@@ -73,6 +73,11 @@
             return bloques[iBloque].GetPalabra(iPalabra);
         }
 
+        public BloqueCacheDatos GetBloque(int iBloque)
+        {
+            return bloques[iBloque];
+        }
+
 
         /**
          * Clase para los Bloques

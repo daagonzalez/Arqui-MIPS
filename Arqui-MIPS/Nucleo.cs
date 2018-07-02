@@ -7,6 +7,7 @@ namespace Arqui_MIPS
     public class Nucleo
     {
         private const int CICLOS_TRAER_DE_MEMORIA = 40;
+        private const int CICLOS_COPIAR_A_MEMORIA = 40;
 
         Contexto contextoEnEjecucion;
         BusDatos busDatos;
@@ -292,12 +293,106 @@ namespace Arqui_MIPS
 
         private int LoadWord(int regFuente2, int posMem)
         {
-            throw new NotImplementedException();
+            int resultado = 0;
+            bool detenido;
+            int nBloque = GetNumeroBloque(posMem);
+            int nPalabra = GetNumeroPalabra(posMem, 4);
+            int nBloqueEnCache = GetPosicionCache(nBloque);
+
+            CacheDatos.BloqueCacheDatos elBloque;
+            do
+            {
+                detenido = false;
+                if (Monitor.TryEnter(cacheDatos.GetBloque(nBloqueEnCache)))
+                {
+                    try
+                    {
+                        elBloque = cacheDatos.GetBloque(nBloqueEnCache);
+                        if (elBloque.GetEtiqueta() == nBloque)
+                        {
+                            if (elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.C || elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.I)
+                            {
+                                AvanzarReloj(1);
+                            }
+                            else
+                            {
+                                //El bloque está Inválido
+                                if (Monitor.TryEnter(busDatos))
+                                {
+                                    try
+                                    {
+                                        CacheDatos.BloqueCacheDatos bloqueOtraCache;
+                                        var otroNucleo = 0;
+                                        if (identificador == 0)
+                                        {
+                                            otroNucleo = 1;
+                                        }
+                                        if (Monitor.TryEnter(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache)))
+                                        {
+                                            try
+                                            {
+                                                bloqueOtraCache = busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache);
+                                                if (bloqueOtraCache.GetEtiqueta() == nBloque)
+                                                {
+                                                    if (bloqueOtraCache.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.M)
+                                                    {
+                                                        busDatos.BloqueAMem(bloqueOtraCache, nBloque);
+                                                        busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.C);
+                                                        cacheDatos.SetBloque(nBloqueEnCache, bloqueOtraCache);
+                                                        AvanzarReloj(CICLOS_COPIAR_A_MEMORIA);
+                                                        AvanzarReloj(1);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    cacheDatos.SetBloque(nBloqueEnCache, busDatos.BloqueDeMem(nBloque));
+                                                    AvanzarReloj(CICLOS_TRAER_DE_MEMORIA);
+                                                    AvanzarReloj(1);
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache));
+                                            }
+                                        }
+                                    }
+
+                                    finally
+                                    {
+                                        Monitor.Exit(busDatos);
+                                    }
+                                }
+                                else
+                                {
+                                    //Detenido en ejecución con IR listo
+                                    detenido = true;
+                                    AvanzarReloj(1);
+                                }
+                            }
+                        }
+                    }
+
+                    finally
+                    {
+                        //Libera la posición de caché
+                        Monitor.Exit(cacheDatos.GetBloque(nBloqueEnCache));
+                    }
+                }
+                else
+                {
+                    AvanzarReloj(1);
+                }
+            } while (detenido);
+
+            resultado = cacheDatos.GetPalabraBloque(nBloqueEnCache, nPalabra);
+
+            return resultado;
         }
 
         private void AvanzarReloj(int ciclos)
         {
             throw new NotImplementedException();
+            //Un ciclo for de 0 a 'ciclos', donde cada iteración espera en la barrera para indicarle al hilo principal que le sume 1 al reloj
         }
 
         public int GetNumeroBloque(int direccion)
