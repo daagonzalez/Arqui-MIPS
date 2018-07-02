@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Arqui_MIPS
 {
@@ -443,7 +444,7 @@ namespace Arqui_MIPS
                         elBloque = cacheDatos.GetBloque(nBloqueEnCache);
                         if (elBloque.GetEtiqueta() == nBloque)
                         {
-                            if (elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.C || elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.I)
+                            if (elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.C || elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.M)
                             {
                                 AvanzarReloj(1);
                             }
