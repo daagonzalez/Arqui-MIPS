@@ -47,7 +47,7 @@ namespace Arqui_MIPS
             {
                 bloqueCache.SetPalabra(i, memoriaPrincipal.GetPalabraInstruccion(nBloque, i));
             }
-            bloqueCache.SetEtiqueta(memoriaPrincipal.GetEtiquetaDato(nBloque));
+            bloqueCache.SetEtiqueta(memoriaPrincipal.GetEtiquetaInstruccion(nBloque));
             return bloqueCache;
         }
         
