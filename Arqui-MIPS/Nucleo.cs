@@ -286,7 +286,140 @@ namespace Arqui_MIPS
         private int StoreWord(int posMem, int regFuente2)
         {
             int exito = 0;
+            bool detenido;
+            int nBloque = GetNumeroBloque(posMem);
+            int nPalabra = GetNumeroPalabra(posMem, 4);
+            int nBloqueEnCache = GetPosicionCache(nBloque);
 
+            CacheDatos.BloqueCacheDatos elBloque = null;
+            do
+            {
+                detenido = false;
+                if (Monitor.TryEnter(cacheDatos.GetBloque(nBloqueEnCache)))
+                {
+                    try
+                    {
+                        elBloque = cacheDatos.GetBloque(nBloqueEnCache);
+                        if (elBloque.GetEtiqueta() == nBloque)
+                        {
+                            switch (elBloque.GetEstado())
+                            {
+                                case CacheDatos.BloqueCacheDatos.Estado.M:
+                                    AvanzarReloj(1);
+                                    break;
+                                case CacheDatos.BloqueCacheDatos.Estado.C:
+                                    if (Monitor.TryEnter(busDatos))
+                                    {
+                                        try
+                                        {
+                                            var otroNucleo = 0;
+                                            if (identificador == 0)
+                                            {
+                                                otroNucleo = 1;
+                                            }
+                                            if (Monitor.TryEnter(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache)))
+                                            {
+                                                try
+                                                {
+                                                    var bloqueOtraCache = busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache);
+                                                    if (bloqueOtraCache.GetEtiqueta() == nBloque)
+                                                    {
+                                                        busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.I);
+                                                    }
+                                                }
+                                                finally
+                                                {
+                                                    Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache));
+                                                    AvanzarReloj(1);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                detenido = true;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            Monitor.Exit(busDatos);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        AvanzarReloj(1);
+                                        detenido = true;
+                                    }
+                                    break;
+                                case CacheDatos.BloqueCacheDatos.Estado.I:
+                                    if (Monitor.TryEnter(busDatos))
+                                    {
+                                        try
+                                        {
+                                            var otroNucleo = 0;
+                                            if (identificador == 0)
+                                            {
+                                                otroNucleo = 1;
+                                            }
+                                            if (Monitor.TryEnter(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache)))
+                                            {
+                                                try
+                                                {
+                                                    var bloqueOtraCache = busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache);
+                                                    if (bloqueOtraCache.GetEtiqueta() == nBloque)
+                                                    {
+                                                        switch (bloqueOtraCache.GetEstado())
+                                                        {
+                                                            case CacheDatos.BloqueCacheDatos.Estado.M:
+                                                                busDatos.BloqueAMem(bloqueOtraCache, nBloque);
+                                                                busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.I);
+                                                                AvanzarReloj(40);
+                                                                break;
+                                                            case CacheDatos.BloqueCacheDatos.Estado.C:
+                                                                busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.I);
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                                finally
+                                                {
+                                                    Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                AvanzarReloj(1);
+                                                detenido = true;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            Monitor.Exit(busDatos);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        AvanzarReloj(1);
+                                        detenido = true;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        Monitor.Exit(cacheDatos.GetBloque(nBloqueEnCache));
+                    }
+                }
+                else
+                {
+                    AvanzarReloj(1);
+                    detenido = true;
+                }
+            } while (detenido);
+
+
+            elBloque.SetPalabra(nPalabra, regFuente2);
+            elBloque.SetEstado(CacheDatos.BloqueCacheDatos.Estado.M);
+            cacheDatos.SetBloque(nBloqueEnCache, elBloque);
 
             return exito;
         }
@@ -381,6 +514,7 @@ namespace Arqui_MIPS
                 else
                 {
                     AvanzarReloj(1);
+                    detenido = true;
                 }
             } while (detenido);
 
