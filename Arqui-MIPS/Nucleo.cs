@@ -381,7 +381,7 @@ namespace Arqui_MIPS
                                                 }
                                                 finally
                                                 {
-                                                    Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache);
+                                                    Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache));
                                                 }
                                             }
                                             else
