@@ -21,7 +21,7 @@ namespace Arqui_MIPS
         // para sincronizacion
         public Barrier Sync;
         public int quantum;
-        public int identificador, CicloActual;
+        public int identificador, CicloActual, quantumInicial;
         public Queue<Contexto> colaContextos;
         public List<Contexto> contextosTerminados;
 
@@ -35,9 +35,10 @@ namespace Arqui_MIPS
             busInstrucciones = bi;
             identificador = id;
             quantum = quantumInicial;
+            this.quantumInicial = quantumInicial;
             this.colaContextos = colaContextos;
-            MessageBox.Show(this.colaContextos.Count.ToString());
             this.contextosTerminados = contextosTerminados;
+            contextoEnEjecucion = null;
 
             nucleos = new List<Nucleo>();
 
@@ -81,8 +82,10 @@ namespace Arqui_MIPS
             while (colaContextos.Count > 0)
             {
                 Sync.SignalAndWait();
-
-                contextoEnEjecucion = colaContextos.Dequeue();
+                if (contextoEnEjecucion == null)
+                {
+                    contextoEnEjecucion = colaContextos.Dequeue();
+                }
                 Run();
             }
             Sync.RemoveParticipant();
@@ -149,6 +152,7 @@ namespace Arqui_MIPS
             {
                 contextoEnEjecucion.SetCicloSalida(CicloActual);
                 contextosTerminados.Add(contextoEnEjecucion);
+                contextoEnEjecucion = null;
             }
             else
             {
@@ -156,7 +160,8 @@ namespace Arqui_MIPS
                 if (quantum == 0)
                 {
                     colaContextos.Enqueue(contextoEnEjecucion);
-
+                    contextoEnEjecucion = null;
+                    quantum = quantumInicial;
                 }
             }
         }
@@ -166,8 +171,8 @@ namespace Arqui_MIPS
             bool res = false;
 
             int codigoInstruccion = instruccion[0],
-                regFuente1 = instruccion[1],
-                regFuente2 = instruccion[2],
+                regFuente1 = instruccion[2],
+                regFuente2 = instruccion[1],
                 regDest = instruccion[3],
                 posMem;
 
@@ -184,6 +189,7 @@ namespace Arqui_MIPS
                     JR RX: PC=RX
                     CodOp: 2 RF1: X RF2 O RD: 0 RD o IMM:0
                     */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta JR R" + regFuente1);
                     contextoEnEjecucion.SetPC(regFuente1);
                     break;
                 case 3:
@@ -191,6 +197,7 @@ namespace Arqui_MIPS
                     JAL n, R31=PC, PC = PC+n
                     CodOp: 3 RF1: 0 RF2 O RD: 0 RD o IMM:n
                     */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta JAL " + regDest);
                     contextoEnEjecucion.SetRegistro(31, pc);
                     contextoEnEjecucion.AumentarPC(regDest);
                     break;
@@ -199,6 +206,7 @@ namespace Arqui_MIPS
                     BEQZ RX, ETIQ : Si RX = 0 salta 
                     CodOp: 4 RF1: Y RF2 O RD: 0 RD o IMM:n
                     */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta BEQZ R" + regFuente1 + ", " + regDest);
                     if (contextoEnEjecucion.GetRegistro(regFuente1) == 0)
                     {
                         //salta a la etiqueta indicada por regDest
@@ -210,6 +218,7 @@ namespace Arqui_MIPS
                      BEQNZ RX, ETIQ : Si RX != 0 salta 
                      CodOp: 5 RF1: x RF2 O RD: 0 RD o IMM:n
                      */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta BEQNZ R" + regFuente1 + ", " + regDest);
                     if (contextoEnEjecucion.GetRegistro(regFuente1) != 0)
                     {
                         //salta a la etiqueta indicada por regDest
@@ -221,6 +230,7 @@ namespace Arqui_MIPS
                     DADDI RX, RY, #n : Rx <-- (Ry) + n
                     CodOp: 8 RF1: Y RF2 O RD: x RD O IMM:n
                     */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DADDI R" + regFuente2 + ", R" + regFuente1 + ", #" + regDest);
                     contextoEnEjecucion.SetRegistro(regFuente2, contextoEnEjecucion.GetRegistro(regFuente1) + regDest);
                     break;
                 case 12:
@@ -228,6 +238,7 @@ namespace Arqui_MIPS
                     DMUL RX, RY, #n : Rx <-- (Ry) * (Rz)
                     CodOp: 12 RF1: Y RF2 O RD: z RD o IMM:X
                     */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DMUL R" + regDest + ", R" + regFuente1 + ", R" + regFuente2);
                     contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) * contextoEnEjecucion.GetRegistro(regFuente2));
 
                     break;
@@ -236,6 +247,7 @@ namespace Arqui_MIPS
                     DDIV RX, RY, #n : Rx <-- (Ry) / (Rz)
                     CodOp: 14 RF1: Y RF2 O RD: z RD o IMM:X
                     */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DDIV R" + regDest + ", R" + regFuente1 + ", R" + regFuente2);
                     contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) / contextoEnEjecucion.GetRegistro(regFuente2));
 
                     break;
@@ -244,6 +256,7 @@ namespace Arqui_MIPS
                     DADD RX, RY, #n : Rx <-- (Ry) + (Rz)
                     CodOp: 32 RF1: Y RF2 O RD: x RD o IMM:Rz
                     */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DADD R" + regDest + ", R" + regFuente1 + ", R" + regFuente2);
                     contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) + contextoEnEjecucion.GetRegistro(regFuente2));
 
                     break;
@@ -252,6 +265,7 @@ namespace Arqui_MIPS
                     DSUB RX, RY, #n : Rx <-- (Ry) - (Rz)
                     CodOp: 34 RF1: Y RF2 O RD: z RD o IMM:X
                     */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DSUB R" + regDest + ", R" + regFuente1 + ", R" + regFuente2);
                     contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) - contextoEnEjecucion.GetRegistro(regFuente2));
 
                     break;
@@ -262,6 +276,7 @@ namespace Arqui_MIPS
                     * 
                     * codOp: 35 RF1: Y RF2 O RD: X RD O IMM: n
                     * */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta LW R" + regFuente2 + ", " + regDest + "(R" + regFuente1 + ")");
                     posMem = contextoEnEjecucion.GetRegistro(regFuente1) + regDest;
                     int loadRes = LoadWord(regFuente2, posMem);
                     contextoEnEjecucion.SetRegistro(regFuente2, loadRes);
@@ -271,6 +286,7 @@ namespace Arqui_MIPS
                      * SW RX, n(rY)
                      * m(N+(RY)) = rX
                      * */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta SW R" + regFuente2 + ", " + regDest + "(R" + regFuente1 + ")");
                     posMem = contextoEnEjecucion.GetRegistro(regFuente1) + regDest;
                     int storeRes = StoreWord(posMem, regFuente2);
                     break;
@@ -289,6 +305,7 @@ namespace Arqui_MIPS
                      fin
                      CodOp: 63 RF1: 0 RF2 O RD: 0 RD o IMM:0
                      */
+                    Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta FIN");
                     res = true;
                     break;
             }

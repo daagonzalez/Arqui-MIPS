@@ -34,6 +34,9 @@ namespace Arqui_MIPS
         //Reloj
         int reloj;
 
+        //Barrera
+        Barrier sync;
+
         public Simulacion(List<List<string>> hilillos, int quantumIngresado, bool esDespacio)
         {
             InitializeComponent();
@@ -42,7 +45,13 @@ namespace Arqui_MIPS
             colaContextos = new Queue<Contexto>();
             contextosTerminados = new List<Contexto>();
 
-            var sync = new Barrier(participantCount: CANTIDAD_NUCLEOS);     //Barrera para sincronizar
+            sync = new Barrier(CANTIDAD_NUCLEOS, (foo) =>
+            {
+                reloj++;
+                //lblReloj.Invoke(new Action(() => lblReloj.Text = reloj.ToString()));
+                //lblReloj.Refresh();
+                Console.WriteLine("Reloj: " + reloj);
+            });     //Barrera para sincronizar
 
             this.hilillos = hilillos;
             quantum = quantumIngresado;
@@ -56,18 +65,27 @@ namespace Arqui_MIPS
             n0 = new Nucleo(sync, busDatos, busInstrucciones, 0, quantumIngresado, ref colaContextos, ref contextosTerminados);
             n1 = new Nucleo(sync, busDatos, busInstrucciones, 1, quantumIngresado, ref colaContextos, ref contextosTerminados);
             
-            var hiloCpu1 = new Thread(n0.Iniciar);
-            var hiloCpu2 = new Thread(n1.Iniciar);
+        }
 
-            hiloCpu1.Start();
-            hiloCpu2.Start();
-
-            hiloCpu1.Join();
-            hiloCpu2.Join();
-            //TEST
-            Resultados fRes = new Resultados(contextosTerminados,n0,n1,memoria);
-                fRes.Show();
-            //TEST
+        delegate void SetTextCallback(string text);
+        private void SetReloj(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this.lblReloj.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetReloj);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.lblReloj.Text = text;
+                this.lblReloj.Invalidate();
+                this.lblReloj.Update();
+                this.lblReloj.Refresh();
+                Application.DoEvents();
+            }
         }
 
         public int GetNumeroBloque(int direccion)
@@ -138,6 +156,24 @@ namespace Arqui_MIPS
                     MessageBox.Show("Avanza 20 ciclos");
                 }
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button1.Hide();
+            var hiloCpu1 = new Thread(n0.Iniciar);
+            var hiloCpu2 = new Thread(n1.Iniciar);
+
+            hiloCpu1.Start();
+            hiloCpu2.Start();
+
+            hiloCpu1.Join();
+            hiloCpu2.Join();
+            //TEST
+            Resultados fRes = new Resultados(contextosTerminados, n0, n1, memoria);
+            fRes.Show();
+            this.Hide();
+            //TEST
         }
     }
 }
