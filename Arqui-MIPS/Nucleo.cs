@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Arqui_MIPS
 {
@@ -35,6 +36,7 @@ namespace Arqui_MIPS
             identificador = id;
             quantum = quantumInicial;
             this.colaContextos = colaContextos;
+            MessageBox.Show(this.colaContextos.Count.ToString());
             this.contextosTerminados = contextosTerminados;
 
             nucleos = new List<Nucleo>();
@@ -81,7 +83,6 @@ namespace Arqui_MIPS
                 Sync.SignalAndWait();
 
                 contextoEnEjecucion = colaContextos.Dequeue();
-                var pc = contextoEnEjecucion.GetPC();
                 Run();
             }
             Sync.RemoveParticipant();
@@ -170,9 +171,9 @@ namespace Arqui_MIPS
                 regDest = instruccion[3],
                 posMem;
 
-            Contexto contPrincipal = colaContextos.Dequeue();
+            //Contexto contPrincipal = colaContextos.Dequeue();
             string output = "";         //debug
-            int pc = contPrincipal.GetPC();
+            int pc = contextoEnEjecucion.GetPC();
             int nBloque = GetNumeroBloque(pc);
             int nPalabra = GetNumeroPalabra(pc, 4);
 
@@ -183,25 +184,25 @@ namespace Arqui_MIPS
                     JR RX: PC=RX
                     CodOp: 2 RF1: X RF2 O RD: 0 RD o IMM:0
                     */
-                    contPrincipal.SetPC(regFuente1);
+                    contextoEnEjecucion.SetPC(regFuente1);
                     break;
                 case 3:
                     /*
                     JAL n, R31=PC, PC = PC+n
                     CodOp: 3 RF1: 0 RF2 O RD: 0 RD o IMM:n
                     */
-                    contPrincipal.SetRegistro(31, pc);
-                    contPrincipal.AumentarPC(regDest);
+                    contextoEnEjecucion.SetRegistro(31, pc);
+                    contextoEnEjecucion.AumentarPC(regDest);
                     break;
                 case 4:
                     /*
                     BEQZ RX, ETIQ : Si RX = 0 salta 
                     CodOp: 4 RF1: Y RF2 O RD: 0 RD o IMM:n
                     */
-                    if (contPrincipal.GetRegistro(regFuente1) == 0)
+                    if (contextoEnEjecucion.GetRegistro(regFuente1) == 0)
                     {
                         //salta a la etiqueta indicada por regDest
-                        contPrincipal.AumentarPC(regDest << 2);
+                        contextoEnEjecucion.AumentarPC(regDest << 2);
                     }
                     break;
                 case 5:
@@ -209,10 +210,10 @@ namespace Arqui_MIPS
                      BEQNZ RX, ETIQ : Si RX != 0 salta 
                      CodOp: 5 RF1: x RF2 O RD: 0 RD o IMM:n
                      */
-                    if (contPrincipal.GetRegistro(regFuente1) != 0)
+                    if (contextoEnEjecucion.GetRegistro(regFuente1) != 0)
                     {
                         //salta a la etiqueta indicada por regDest
-                        contPrincipal.AumentarPC(regDest << 2);
+                        contextoEnEjecucion.AumentarPC(regDest << 2);
                     }
                     break;
                 case 8:
@@ -220,14 +221,14 @@ namespace Arqui_MIPS
                     DADDI RX, RY, #n : Rx <-- (Ry) + n
                     CodOp: 8 RF1: Y RF2 O RD: x RD O IMM:n
                     */
-                    contPrincipal.SetRegistro(regFuente2, contPrincipal.GetRegistro(regFuente1) + regDest);
+                    contextoEnEjecucion.SetRegistro(regFuente2, contextoEnEjecucion.GetRegistro(regFuente1) + regDest);
                     break;
                 case 12:
                     /*
                     DMUL RX, RY, #n : Rx <-- (Ry) * (Rz)
                     CodOp: 12 RF1: Y RF2 O RD: z RD o IMM:X
                     */
-                    contPrincipal.SetRegistro(regDest,contPrincipal.GetRegistro(regFuente1) * contPrincipal.GetRegistro(regFuente2));
+                    contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) * contextoEnEjecucion.GetRegistro(regFuente2));
 
                     break;
                 case 14:
@@ -235,7 +236,7 @@ namespace Arqui_MIPS
                     DDIV RX, RY, #n : Rx <-- (Ry) / (Rz)
                     CodOp: 14 RF1: Y RF2 O RD: z RD o IMM:X
                     */
-                    contPrincipal.SetRegistro(regDest,contPrincipal.GetRegistro(regFuente1) / contPrincipal.GetRegistro(regFuente2));
+                    contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) / contextoEnEjecucion.GetRegistro(regFuente2));
 
                     break;
                 case 32:
@@ -243,7 +244,7 @@ namespace Arqui_MIPS
                     DADD RX, RY, #n : Rx <-- (Ry) + (Rz)
                     CodOp: 32 RF1: Y RF2 O RD: x RD o IMM:Rz
                     */
-                    contPrincipal.SetRegistro(regDest, contPrincipal.GetRegistro(regFuente1) + contPrincipal.GetRegistro(regFuente2));
+                    contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) + contextoEnEjecucion.GetRegistro(regFuente2));
 
                     break;
                 case 34:
@@ -251,7 +252,7 @@ namespace Arqui_MIPS
                     DSUB RX, RY, #n : Rx <-- (Ry) - (Rz)
                     CodOp: 34 RF1: Y RF2 O RD: z RD o IMM:X
                     */
-                    contPrincipal.SetRegistro(regDest, contPrincipal.GetRegistro(regFuente1) - contPrincipal.GetRegistro(regFuente2));
+                    contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) - contextoEnEjecucion.GetRegistro(regFuente2));
 
                     break;
                 case 35:
@@ -261,16 +262,16 @@ namespace Arqui_MIPS
                     * 
                     * codOp: 35 RF1: Y RF2 O RD: X RD O IMM: n
                     * */
-                    posMem = contPrincipal.GetRegistro(regFuente1) + regDest;
+                    posMem = contextoEnEjecucion.GetRegistro(regFuente1) + regDest;
                     int loadRes = LoadWord(regFuente2, posMem);
-                    contPrincipal.SetRegistro(regFuente2, loadRes);
+                    contextoEnEjecucion.SetRegistro(regFuente2, loadRes);
                     break;
                 case 43:
                     /* *
                      * SW RX, n(rY)
                      * m(N+(RY)) = rX
                      * */
-                    posMem = contPrincipal.GetRegistro(regFuente1) + regDest;
+                    posMem = contextoEnEjecucion.GetRegistro(regFuente1) + regDest;
                     int storeRes = StoreWord(posMem, regFuente2);
                     break;
                 case 50:
@@ -291,7 +292,7 @@ namespace Arqui_MIPS
                     res = true;
                     break;
             }
-            contPrincipal.AumentarPC(4);
+            contextoEnEjecucion.AumentarPC(4);
 
             return res;
         }

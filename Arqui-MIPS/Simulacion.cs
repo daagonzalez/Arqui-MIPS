@@ -55,7 +55,7 @@ namespace Arqui_MIPS
             
             n0 = new Nucleo(sync, busDatos, busInstrucciones, 0, quantumIngresado, ref colaContextos, ref contextosTerminados);
             n1 = new Nucleo(sync, busDatos, busInstrucciones, 1, quantumIngresado, ref colaContextos, ref contextosTerminados);
-
+            
             var hiloCpu1 = new Thread(n0.Iniciar);
             var hiloCpu2 = new Thread(n1.Iniciar);
 
