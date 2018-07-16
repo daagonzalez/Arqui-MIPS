@@ -401,10 +401,11 @@ namespace Arqui_MIPS
                                                             case CacheDatos.BloqueCacheDatos.Estado.M:
                                                                 busDatos.BloqueAMem(bloqueOtraCache, nBloque);
                                                                 busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.I);
-                                                                AvanzarReloj(40);
+                                                                AvanzarReloj(CICLOS_COPIAR_A_MEMORIA);
                                                                 break;
                                                             case CacheDatos.BloqueCacheDatos.Estado.C:
                                                                 busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.I);
+                                                                // Solo invalido.
                                                                 break;
                                                         }
                                                     }
@@ -432,6 +433,67 @@ namespace Arqui_MIPS
                                     }
                                     break;
                             }
+                        }
+                        else
+                        {
+                            // FALLO DE CACHE
+                            if (elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.M) // Debo guardar en memoria ese bloque
+                            {
+                                if (Monitor.TryEnter(busDatos))             // pide bus 
+                                {
+                                    try
+                                    {
+                                        busDatos.BloqueAMem(elBloque, elBloque.GetEtiqueta());
+                                        busDatos.CambiarEstadoBloqueCache(identificador, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.C);
+                                        AvanzarReloj(CICLOS_COPIAR_A_MEMORIA);
+                                        var otroNucleo = 0;
+                                        if (identificador == 0)
+                                        {
+                                            otroNucleo = 1;
+                                        }
+                                        if (Monitor.TryEnter(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache)))
+                                        {
+                                            try
+                                            {
+                                                var bloqueOtraCache = busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache);
+                                                if (bloqueOtraCache.GetEtiqueta() == nBloque)
+                                                {
+                                                    switch (bloqueOtraCache.GetEstado())
+                                                    {
+                                                        case CacheDatos.BloqueCacheDatos.Estado.M:
+                                                            busDatos.BloqueAMem(bloqueOtraCache, nBloque);
+                                                            busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.I);
+                                                            AvanzarReloj(CICLOS_COPIAR_A_MEMORIA);
+                                                            break;
+                                                        case CacheDatos.BloqueCacheDatos.Estado.C:
+                                                            busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.I);
+                                                            // Solo invalido.
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            AvanzarReloj(1);
+                                            detenido = true;
+                                        }
+
+                                    }
+                                    finally
+                                    {
+                                        Monitor.Exit(busDatos);
+                                    }
+                                }
+                            }
+                            // Cargo el bloque a cache para cambiarlo y dejar en estado modificado luego.
+                            busDatos.BloqueAMem(elBloque, elBloque.GetEtiqueta());
+                            busDatos.CambiarEstadoBloqueCache(identificador, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.C);
+                            AvanzarReloj(CICLOS_COPIAR_A_MEMORIA);
                         }
                     }
                     finally
@@ -617,7 +679,7 @@ namespace Arqui_MIPS
 
         private void AvanzarReloj(int ciclos)
         {
-            for(int i=0; i < ciclos; ciclos++)
+            for (int i = 0; i < ciclos; ciclos++)
             {
                 //Sync.SignalAndWait();
             }
