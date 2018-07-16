@@ -9,6 +9,7 @@ namespace Arqui_MIPS
     {
         private const int CICLOS_TRAER_DE_MEMORIA = 40;
         private const int CICLOS_COPIAR_A_MEMORIA = 40;
+        private const int TAMBLOQUE = 16;
 
         Contexto contextoEnEjecucion;
         BusDatos busDatos;
@@ -78,7 +79,7 @@ namespace Arqui_MIPS
         internal void Iniciar()
         {
             // Se inicia el hilo
-            // mientras todavía existan contextos en la cola. Debo pensar en el manejo de esta cola          
+            // mientras todavía existan contextos en la cola.      
             while (colaContextos.Count > 0)
             {
                 Sync.SignalAndWait();
@@ -95,7 +96,6 @@ namespace Arqui_MIPS
             //    {
             //        contextoEnEjecucion = colaContextos.Dequeue();
             //    }
-            //Habría que hacer algo cuando ya no hay contextos para correr
             //}
 
             //while (true)
@@ -120,7 +120,6 @@ namespace Arqui_MIPS
             int nBloqueEnCache = GetPosicionCache(nBloque);
 
             //Revisar la caché de instrucciones
-            //--Creo que no hace falta bloquear la posición de caché ya que el otro núcleo no tiene porque usarla dado que las instrucciones no se modifican
             if (cacheInstrucciones.GetEtiquetaBloque(nBloqueEnCache) != nBloque)
             {
                 /**FALLO DE CACHÉ**/
@@ -336,10 +335,10 @@ namespace Arqui_MIPS
                             switch (elBloque.GetEstado())
                             {
                                 case CacheDatos.BloqueCacheDatos.Estado.M:
-                                    AvanzarReloj(1);
+                                    AvanzarReloj(1);        // Tiene el bloque en cache.
                                     break;
-                                case CacheDatos.BloqueCacheDatos.Estado.C:
-                                    if (Monitor.TryEnter(busDatos))
+                                case CacheDatos.BloqueCacheDatos.Estado.C:      // tambien lo tiene pero debe revisar la otra cache para invalidar
+                                    if (Monitor.TryEnter(busDatos))             // pide bus 
                                     {
                                         try
                                         {
@@ -375,8 +374,8 @@ namespace Arqui_MIPS
                                         }
                                     }
                                     else
-                                    {
-                                        AvanzarReloj(1);
+                                    {                           // no logro el bus, debe retroceder el pc
+                                        AvanzarReloj(1);        // espero 1
                                         detenido = true;
                                     }
                                     break;
@@ -476,7 +475,7 @@ namespace Arqui_MIPS
                         {
                             if (elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.C || elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.M)
                             {
-                                AvanzarReloj(1);
+                                AvanzarReloj(1);                // Bloque esta en la cache, todo bien
                             }
                             else
                             {
@@ -491,6 +490,7 @@ namespace Arqui_MIPS
                                         {
                                             otroNucleo = 1;
                                         }
+
                                         if (Monitor.TryEnter(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache)))
                                         {
                                             try
@@ -534,6 +534,67 @@ namespace Arqui_MIPS
                                 }
                             }
                         }
+                        else
+                        {
+                            // Reviso si mi bloque esta modificado, el que esta en la cache, de estarlo debo guardarlo en memoria. Hay un FALLO DE CACHE
+                            if (Monitor.TryEnter(busDatos))
+                            {
+                                try
+                                {
+                                    if (elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.M)   // bloque victima
+                                    {
+                                        busDatos.BloqueAMem(elBloque, elBloque.GetEtiqueta());
+                                        busDatos.CambiarEstadoBloqueCache(identificador, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.C);
+                                        AvanzarReloj(CICLOS_COPIAR_A_MEMORIA);
+                                    }
+                                    else
+                                    {   // revisa la otra cache para ver si lo encuentra alla.
+                                        CacheDatos.BloqueCacheDatos bloqueOtraCache;
+                                        var otroNucleo = 0;
+                                        if (identificador == 0)
+                                        {
+                                            otroNucleo = 1;
+                                        }
+
+                                        if (Monitor.TryEnter(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache)))
+                                        {
+                                            try
+                                            {
+                                                bloqueOtraCache = busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache);
+                                                if (bloqueOtraCache.GetEtiqueta() == nBloque)
+                                                {
+                                                    if (bloqueOtraCache.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.M)
+                                                    {
+                                                        busDatos.BloqueAMem(bloqueOtraCache, nBloque);
+                                                        busDatos.CambiarEstadoBloqueCache(otroNucleo, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.C);
+                                                        cacheDatos.SetBloque(nBloqueEnCache, bloqueOtraCache);      // copia de la otra cache a la de el.
+                                                        AvanzarReloj(CICLOS_COPIAR_A_MEMORIA);
+                                                        AvanzarReloj(1);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    cacheDatos.SetBloque(nBloqueEnCache, busDatos.BloqueDeMem(nBloque));
+                                                    AvanzarReloj(CICLOS_TRAER_DE_MEMORIA);
+                                                    AvanzarReloj(1);
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache));
+                                            }
+                                        }
+                                    }
+                                }
+
+                                finally
+                                {
+                                    Monitor.Exit(busDatos);
+                                }
+
+                            }
+
+                        }
                     }
 
                     finally
@@ -565,7 +626,7 @@ namespace Arqui_MIPS
 
         public int GetNumeroBloque(int direccion)
         {
-            return (direccion / 16);
+            return (direccion / TAMBLOQUE);
         }
 
         public int GetNumeroPalabra(int direccion, int tamannoCache)

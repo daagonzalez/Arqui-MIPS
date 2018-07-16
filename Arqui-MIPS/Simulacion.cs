@@ -10,6 +10,7 @@ namespace Arqui_MIPS
         //Constantes
         private const int DIRECCION_INICIO_INSTRUCCION = 384;
         private const int CANTIDAD_NUCLEOS = 2;
+        private const int TAMBLOQUE = 16;
 
         //Memoria
         Memoria memoria;
@@ -45,13 +46,15 @@ namespace Arqui_MIPS
             colaContextos = new Queue<Contexto>();
             contextosTerminados = new List<Contexto>();
 
-            sync = new Barrier(CANTIDAD_NUCLEOS, (foo) =>
-            {
-                reloj++;
-                //lblReloj.Invoke(new Action(() => lblReloj.Text = reloj.ToString()));
-                //lblReloj.Refresh();
-                Console.WriteLine("Reloj: " + reloj);
-            });     //Barrera para sincronizar
+            var sync = new Barrier(participantCount: CANTIDAD_NUCLEOS); //Barrera para sincronizar
+
+            //sync = new Barrier(CANTIDAD_NUCLEOS, (foo) =>
+            //{
+            //    reloj++;
+            //lblReloj.Invoke(new Action(() => lblReloj.Text = reloj.ToString()));
+            //lblReloj.Refresh();
+            //    Console.WriteLine("Reloj: " + reloj);
+            //});     //Barrera para sincronizar
 
             this.hilillos = hilillos;
             quantum = quantumIngresado;
@@ -90,7 +93,7 @@ namespace Arqui_MIPS
 
         public int GetNumeroBloque(int direccion)
         {
-            return (direccion / 16);
+            return (direccion / TAMBLOQUE);
         }
 
         /*
