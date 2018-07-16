@@ -491,9 +491,9 @@ namespace Arqui_MIPS
                                 }
                             }
                             // Cargo el bloque a cache para cambiarlo y dejar en estado modificado luego.
-                            busDatos.BloqueAMem(elBloque, elBloque.GetEtiqueta());
+                            cacheDatos.SetBloque(nBloqueEnCache, busDatos.BloqueDeMem(nBloque));
                             busDatos.CambiarEstadoBloqueCache(identificador, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.C);
-                            AvanzarReloj(CICLOS_COPIAR_A_MEMORIA);
+                            AvanzarReloj(CICLOS_TRAER_DE_MEMORIA);
                         }
                     }
                     finally
