@@ -342,7 +342,7 @@ namespace Arqui_MIPS
             {
                 detenido = false;
                 elBloque = cacheDatos.GetBloque(nBloqueEnCache);
-                if (Monitor.TryEnter(elBloque))
+                if (Monitor.TryEnter(cacheDatos.GetBloque(nBloqueEnCache)))
                 {
                     try
                     {
@@ -517,7 +517,7 @@ namespace Arqui_MIPS
                     }
                     finally
                     {
-                        Monitor.Exit(elBloque);
+                        Monitor.Exit(cacheDatos.GetBloque(nBloqueEnCache));
                     }
                 }
                 else
