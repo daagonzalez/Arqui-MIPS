@@ -10,6 +10,7 @@ namespace Arqui_MIPS
         private const int CICLOS_TRAER_DE_MEMORIA = 40;
         private const int CICLOS_COPIAR_A_MEMORIA = 40;
         private const int TAMBLOQUE = 16;
+        private const int TAMPALABRA = 4;
 
         Contexto contextoEnEjecucion;
         BusDatos busDatos;
@@ -117,7 +118,7 @@ namespace Arqui_MIPS
             //Obtener direcciones
             int pcContexto = contextoEnEjecucion.GetPC();
             int nBloque = GetNumeroBloque(pcContexto);
-            int nPalabra = GetNumeroPalabra(pcContexto, 4);
+            int nPalabra = GetNumeroPalabra(pcContexto, TAMPALABRA);
             int nBloqueEnCache = GetPosicionCache(nBloque);
 
             //Revisar la caché de instrucciones
@@ -507,7 +508,10 @@ namespace Arqui_MIPS
                             }
                             // Cargo el bloque a cache para cambiarlo y dejar en estado modificado luego.
                             cacheDatos.SetBloque(nBloqueEnCache, busDatos.BloqueDeMem(nBloque));
-                            busDatos.CambiarEstadoBloqueCache(identificador, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.C);
+                            ///elBloque =           // aqui
+                            elBloque.SetEstado(CacheDatos.BloqueCacheDatos.Estado.C);
+                            //busDatos.CambiarEstadoBloqueCache(identificador, nBloqueEnCache, CacheDatos.BloqueCacheDatos.Estado.C);
+                            
                             AvanzarReloj(CICLOS_TRAER_DE_MEMORIA);
                         }
                     }
