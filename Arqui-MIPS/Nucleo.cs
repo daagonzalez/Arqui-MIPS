@@ -29,11 +29,13 @@ namespace Arqui_MIPS
         /*
          * Constructor de la clase
          */
-        public Nucleo(Barrier barrera, BusDatos bd, BusInstrucciones bi, int id, int quantumInicial, ref Queue<Contexto> colaContextos, ref List<Contexto> contextosTerminados)
+        public Nucleo(Barrier barrera, ref BusDatos bd, ref BusInstrucciones bi, int id, int quantumInicial, ref Queue<Contexto> colaContextos, ref List<Contexto> contextosTerminados)
         {
             Sync = barrera;
             busDatos = bd;
+            busDatos.SetNucleo(id, this);
             busInstrucciones = bi;
+            busInstrucciones.SetNucleo(id, this);
             identificador = id;
             quantum = quantumInicial;
             this.quantumInicial = quantumInicial;
@@ -82,7 +84,6 @@ namespace Arqui_MIPS
             // mientras todavía existan contextos en la cola.      
             while (colaContextos.Count > 0)
             {
-                Sync.SignalAndWait();
                 if (contextoEnEjecucion == null)
                 {
                     contextoEnEjecucion = colaContextos.Dequeue();
@@ -120,29 +121,35 @@ namespace Arqui_MIPS
             int nBloqueEnCache = GetPosicionCache(nBloque);
 
             //Revisar la caché de instrucciones
+            bool falloCacheI = true;
+            
             if (cacheInstrucciones.GetEtiquetaBloque(nBloqueEnCache) != nBloque)
             {
                 /**FALLO DE CACHÉ**/
-                //Pedir el bus de instrucciones
-                if (Monitor.TryEnter(busInstrucciones))
+                while (falloCacheI)
                 {
-                    try
+                    //Pedir el bus de instrucciones
+                    if (Monitor.TryEnter(busInstrucciones))
                     {
-                        //Cargar el bloque de memoria a la caché
-                        var bloque = busInstrucciones.BloqueDeMem(nBloque);
-                        cacheInstrucciones.SetBloque(nBloqueEnCache, bloque);
-                        AvanzarReloj(CICLOS_TRAER_DE_MEMORIA);
+                        try
+                        {
+                            //Cargar el bloque de memoria a la caché
+                            var bloque = busInstrucciones.BloqueDeMem(nBloque);
+                            cacheInstrucciones.SetBloque(nBloqueEnCache, bloque);
+                            AvanzarReloj(CICLOS_TRAER_DE_MEMORIA);
+                        }
+                        finally
+                        {
+                            //Libera el bus de instrucciones
+                            Monitor.Exit(busInstrucciones);
+                            falloCacheI = false;
+                        }
                     }
-                    finally
+                    else
                     {
-                        //Libera el bus de instrucciones
-                        Monitor.Exit(busInstrucciones);
+                        //No se pudo obtener el bus
+                        AvanzarReloj(1);    // avanzar reloj es del hilo principal.
                     }
-                }
-                else
-                {
-                    //No se pudo obtener el bus
-                    AvanzarReloj(1);    // avanzar reloj es del hilo principal.
                 }
             }
             instruccion = cacheInstrucciones.GetPalabraBloque(nBloqueEnCache, nPalabra);
@@ -190,6 +197,7 @@ namespace Arqui_MIPS
                     */
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta JR R" + regFuente1);
                     contextoEnEjecucion.SetPC(regFuente1);
+                    AvanzarReloj(1);
                     break;
                 case 3:
                     /*
@@ -199,6 +207,7 @@ namespace Arqui_MIPS
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta JAL " + regDest);
                     contextoEnEjecucion.SetRegistro(31, pc);
                     contextoEnEjecucion.AumentarPC(regDest);
+                    AvanzarReloj(1);
                     break;
                 case 4:
                     /*
@@ -211,6 +220,7 @@ namespace Arqui_MIPS
                         //salta a la etiqueta indicada por regDest
                         contextoEnEjecucion.AumentarPC(regDest << 2);
                     }
+                    AvanzarReloj(1);
                     break;
                 case 5:
                     /*
@@ -223,6 +233,7 @@ namespace Arqui_MIPS
                         //salta a la etiqueta indicada por regDest
                         contextoEnEjecucion.AumentarPC(regDest << 2);
                     }
+                    AvanzarReloj(1);
                     break;
                 case 8:
                     /*
@@ -231,6 +242,7 @@ namespace Arqui_MIPS
                     */
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DADDI R" + regFuente2 + ", R" + regFuente1 + ", #" + regDest);
                     contextoEnEjecucion.SetRegistro(regFuente2, contextoEnEjecucion.GetRegistro(regFuente1) + regDest);
+                    AvanzarReloj(1);
                     break;
                 case 12:
                     /*
@@ -239,7 +251,7 @@ namespace Arqui_MIPS
                     */
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DMUL R" + regDest + ", R" + regFuente1 + ", R" + regFuente2);
                     contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) * contextoEnEjecucion.GetRegistro(regFuente2));
-
+                    AvanzarReloj(1);
                     break;
                 case 14:
                     /*
@@ -248,7 +260,7 @@ namespace Arqui_MIPS
                     */
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DDIV R" + regDest + ", R" + regFuente1 + ", R" + regFuente2);
                     contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) / contextoEnEjecucion.GetRegistro(regFuente2));
-
+                    AvanzarReloj(1);
                     break;
                 case 32:
                     /*
@@ -257,7 +269,7 @@ namespace Arqui_MIPS
                     */
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DADD R" + regDest + ", R" + regFuente1 + ", R" + regFuente2);
                     contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) + contextoEnEjecucion.GetRegistro(regFuente2));
-
+                    AvanzarReloj(1);
                     break;
                 case 34:
                     /*
@@ -266,7 +278,7 @@ namespace Arqui_MIPS
                     */
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta DSUB R" + regDest + ", R" + regFuente1 + ", R" + regFuente2);
                     contextoEnEjecucion.SetRegistro(regDest, contextoEnEjecucion.GetRegistro(regFuente1) - contextoEnEjecucion.GetRegistro(regFuente2));
-
+                    AvanzarReloj(1);
                     break;
                 case 35:
                     /* *
@@ -279,6 +291,7 @@ namespace Arqui_MIPS
                     posMem = contextoEnEjecucion.GetRegistro(regFuente1) + regDest;
                     int loadRes = LoadWord(regFuente2, posMem);
                     contextoEnEjecucion.SetRegistro(regFuente2, loadRes);
+                    AvanzarReloj(1);
                     break;
                 case 43:
                     /* *
@@ -288,6 +301,7 @@ namespace Arqui_MIPS
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta SW R" + regFuente2 + ", " + regDest + "(R" + regFuente1 + ")");
                     posMem = contextoEnEjecucion.GetRegistro(regFuente1) + regDest;
                     int storeRes = StoreWord(posMem, regFuente2);
+                    AvanzarReloj(1);
                     break;
                 case 50:
                     /* *
@@ -306,6 +320,7 @@ namespace Arqui_MIPS
                      */
                     Console.WriteLine("(Hilillo " + contextoEnEjecucion.GetId() + ") Núcleo " + identificador + " ejecuta FIN");
                     res = true;
+                    AvanzarReloj(1);
                     break;
             }
             contextoEnEjecucion.AumentarPC(4);
@@ -325,11 +340,11 @@ namespace Arqui_MIPS
             do
             {
                 detenido = false;
-                if (Monitor.TryEnter(cacheDatos.GetBloque(nBloqueEnCache)))
+                elBloque = cacheDatos.GetBloque(nBloqueEnCache);
+                if (Monitor.TryEnter(elBloque))
                 {
                     try
                     {
-                        elBloque = cacheDatos.GetBloque(nBloqueEnCache);
                         if (elBloque.GetEtiqueta() == nBloque)
                         {
                             switch (elBloque.GetEstado())
@@ -498,7 +513,7 @@ namespace Arqui_MIPS
                     }
                     finally
                     {
-                        Monitor.Exit(cacheDatos.GetBloque(nBloqueEnCache));
+                        Monitor.Exit(elBloque);
                     }
                 }
                 else
@@ -679,9 +694,9 @@ namespace Arqui_MIPS
 
         private void AvanzarReloj(int ciclos)
         {
-            for (int i = 0; i < ciclos; ciclos++)
+            for (int i = 0; i < ciclos; i++)
             {
-                //Sync.SignalAndWait();
+                Sync.SignalAndWait();
             }
             //Un ciclo for de 0 a 'ciclos', donde cada iteración espera en la barrera para indicarle al hilo principal que le sume 1 al reloj
         }

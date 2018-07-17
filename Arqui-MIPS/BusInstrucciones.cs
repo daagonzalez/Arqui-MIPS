@@ -18,12 +18,19 @@ namespace Arqui_MIPS
         }
 
         /*
-         * SetNucleos Setea las referencias a los nucleos
+         * SetNucleo Setea las referencias a los nucleos
          */
-        public void SetNucleos(Nucleo n0, Nucleo n1)
+        public void SetNucleo(int identificador, Nucleo nucleo)
         {
-            this.n0 = n0;
-            this.n1 = n1;
+            switch (identificador)
+            {
+                case 0:
+                    n0 = nucleo;
+                    break;
+                case 1:
+                    n1 = nucleo;
+                    break;
+            }
         }
 
         /*

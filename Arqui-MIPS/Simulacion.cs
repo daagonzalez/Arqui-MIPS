@@ -46,15 +46,15 @@ namespace Arqui_MIPS
             colaContextos = new Queue<Contexto>();
             contextosTerminados = new List<Contexto>();
 
-            var sync = new Barrier(participantCount: CANTIDAD_NUCLEOS); //Barrera para sincronizar
+           // var sync = new Barrier(participantCount: CANTIDAD_NUCLEOS); //Barrera para sincronizar
 
-            //sync = new Barrier(CANTIDAD_NUCLEOS, (foo) =>
-            //{
-            //    reloj++;
+            sync = new Barrier(CANTIDAD_NUCLEOS, (foo) =>
+            {
+                reloj++;
             //lblReloj.Invoke(new Action(() => lblReloj.Text = reloj.ToString()));
             //lblReloj.Refresh();
-            //    Console.WriteLine("Reloj: " + reloj);
-            //});     //Barrera para sincronizar
+                Console.WriteLine("Reloj: " + reloj);
+            });     //Barrera para sincronizar
 
             this.hilillos = hilillos;
             quantum = quantumIngresado;
@@ -65,8 +65,8 @@ namespace Arqui_MIPS
             busDatos = new BusDatos(memoria);
             busInstrucciones = new BusInstrucciones(memoria);
             
-            n0 = new Nucleo(sync, busDatos, busInstrucciones, 0, quantumIngresado, ref colaContextos, ref contextosTerminados);
-            n1 = new Nucleo(sync, busDatos, busInstrucciones, 1, quantumIngresado, ref colaContextos, ref contextosTerminados);
+            n0 = new Nucleo(sync, ref busDatos, ref busInstrucciones, 0, quantumIngresado, ref colaContextos, ref contextosTerminados);
+            n1 = new Nucleo(sync, ref busDatos, ref busInstrucciones, 1, quantumIngresado, ref colaContextos, ref contextosTerminados);
             
         }
 
