@@ -85,6 +85,7 @@ namespace Arqui_MIPS
             // mientras todavía existan contextos en la cola.      
             while (colaContextos.Count > 0)
             {
+                //Sync.SignalAndWait();
                 if (contextoEnEjecucion == null)
                 {
                     contextoEnEjecucion = colaContextos.Dequeue();
@@ -342,6 +343,7 @@ namespace Arqui_MIPS
             {
                 detenido = false;
                 elBloque = cacheDatos.GetBloque(nBloqueEnCache);
+                var bloqueViejo = elBloque;
                 if (Monitor.TryEnter(cacheDatos.GetBloque(nBloqueEnCache)))
                 {
                     try
@@ -517,7 +519,7 @@ namespace Arqui_MIPS
                     }
                     finally
                     {
-                        Monitor.Exit(cacheDatos.GetBloque(nBloqueEnCache));
+                        Monitor.Exit(bloqueViejo);
                     }
                 }
                 else
@@ -544,14 +546,17 @@ namespace Arqui_MIPS
             int nBloqueEnCache = GetPosicionCache(nBloque);
 
             CacheDatos.BloqueCacheDatos elBloque;
+            CacheDatos.BloqueCacheDatos elBloqueV;
+
             do
             {
                 detenido = false;
-                if (Monitor.TryEnter(cacheDatos.GetBloque(nBloqueEnCache)))
+                if (Monitor.TryEnter(elBloqueV = cacheDatos.GetBloque(nBloqueEnCache)))
                 {
                     try
                     {
                         elBloque = cacheDatos.GetBloque(nBloqueEnCache);
+                        //elBloqueV = cacheDatos.GetBloque(nBloqueEnCache);
                         if (elBloque.GetEtiqueta() == nBloque)
                         {
                             if (elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.C || elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.M)
@@ -681,7 +686,7 @@ namespace Arqui_MIPS
                     finally
                     {
                         //Libera la posición de caché
-                        Monitor.Exit(cacheDatos.GetBloque(nBloqueEnCache));
+                        Monitor.Exit(elBloqueV);
                     }
                 }
                 else
