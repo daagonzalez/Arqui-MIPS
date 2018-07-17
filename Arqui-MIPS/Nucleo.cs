@@ -82,28 +82,30 @@ namespace Arqui_MIPS
         internal void Iniciar()
         {
             // Se inicia el hilo
-            // mientras todavía existan contextos en la cola.      
-            while (colaContextos.Count > 0)
-            {
-                //Sync.SignalAndWait();
-                if (contextoEnEjecucion == null)
-                {
-                    contextoEnEjecucion = colaContextos.Dequeue();
-                }
-                Run();
-            }
-            Sync.RemoveParticipant();
-            //lock (colaContextos)
-            // { //Se bloquea para que solo uno de los núcleos a la vez pueda sacar de la cola
-            //    if (colaContextos.Count > 0)
-            //    {
-            //        contextoEnEjecucion = colaContextos.Dequeue();
-            //    }
-            //}
-
-            //while (true)
+            // mientras todavía existan contextos en la cola.
+            //if (Monitor.TryEnter(colaContextos))
             //{
-            //  Run();
+              //  try
+                //{
+                    while (colaContextos.Count > 0)
+                    {
+                        //Sync.SignalAndWait();
+                        if (contextoEnEjecucion == null)
+                        {
+                            contextoEnEjecucion = colaContextos.Dequeue();
+                        }
+                        Run();
+                    }
+                    Sync.RemoveParticipant();
+                //}
+                //finally
+                //{
+                    //Libera el bus de instrucciones
+                  //  Monitor.Exit(colaContextos);
+                //}
+                //else {
+
+                //}
             //}
         }
 
@@ -342,18 +344,19 @@ namespace Arqui_MIPS
             do
             {
                 detenido = false;
-                elBloque = cacheDatos.GetBloque(nBloqueEnCache);
-                var bloqueViejo = elBloque;
-                if (Monitor.TryEnter(cacheDatos.GetBloque(nBloqueEnCache)))
+                //elBloque = cacheDatos.GetBloque(nBloqueEnCache);
+                //var bloqueViejo = elBloque;
+                if (Monitor.TryEnter(cacheDatos.bloques[nBloqueEnCache]))
                 {
                     try
                     {
+                        elBloque = cacheDatos.bloques[nBloqueEnCache];
                         if (elBloque.GetEtiqueta() == nBloque)
                         {
                             switch (elBloque.GetEstado())
                             {
                                 case CacheDatos.BloqueCacheDatos.Estado.M:
-                                    AvanzarReloj(1);        // Tiene el bloque en cache.
+                                    //AvanzarReloj(1);                            // Tiene el bloque en cache. Ya se aumenta en otro lado el reloj
                                     break;
                                 case CacheDatos.BloqueCacheDatos.Estado.C:      // tambien lo tiene pero debe revisar la otra cache para invalidar
                                     if (Monitor.TryEnter(busDatos))             // pide bus 
@@ -378,7 +381,7 @@ namespace Arqui_MIPS
                                                 finally
                                                 {
                                                     Monitor.Exit(busDatos.GetBloqueCache(otroNucleo, nBloqueEnCache));
-                                                    AvanzarReloj(1);
+                                                   // AvanzarReloj(1);
                                                 }
                                             }
                                             else
@@ -519,7 +522,10 @@ namespace Arqui_MIPS
                     }
                     finally
                     {
-                        Monitor.Exit(bloqueViejo);
+                        elBloque.SetPalabra(nPalabra, regFuente2);
+                        elBloque.SetEstado(CacheDatos.BloqueCacheDatos.Estado.M);
+                        cacheDatos.SetBloque(nBloqueEnCache, elBloque);
+                        Monitor.Exit(cacheDatos.bloques[nBloqueEnCache]);
                     }
                 }
                 else
@@ -528,11 +534,6 @@ namespace Arqui_MIPS
                     detenido = true;
                 }
             } while (detenido);
-
-
-            elBloque.SetPalabra(nPalabra, regFuente2);
-            elBloque.SetEstado(CacheDatos.BloqueCacheDatos.Estado.M);
-            cacheDatos.SetBloque(nBloqueEnCache, elBloque);
 
             return exito;
         }
@@ -551,7 +552,7 @@ namespace Arqui_MIPS
             do
             {
                 detenido = false;
-                if (Monitor.TryEnter(elBloqueV = cacheDatos.GetBloque(nBloqueEnCache)))
+                if (Monitor.TryEnter(cacheDatos.bloques[nBloqueEnCache]))
                 {
                     try
                     {
@@ -561,7 +562,7 @@ namespace Arqui_MIPS
                         {
                             if (elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.C || elBloque.GetEstado() == CacheDatos.BloqueCacheDatos.Estado.M)
                             {
-                                AvanzarReloj(1);                // Bloque esta en la cache, todo bien
+                                //AvanzarReloj(1);                // Bloque esta en la cache, todo bien // Ya sumo en otro lado
                             }
                             else
                             {
@@ -686,7 +687,8 @@ namespace Arqui_MIPS
                     finally
                     {
                         //Libera la posición de caché
-                        Monitor.Exit(elBloqueV);
+                        resultado = cacheDatos.GetPalabraBloque(nBloqueEnCache, nPalabra);
+                        Monitor.Exit(cacheDatos.bloques[nBloqueEnCache]);
                     }
                 }
                 else
@@ -695,8 +697,6 @@ namespace Arqui_MIPS
                     detenido = true;
                 }
             } while (detenido);
-
-            resultado = cacheDatos.GetPalabraBloque(nBloqueEnCache, nPalabra);
 
             return resultado;
         }

@@ -3,7 +3,7 @@
     public class CacheDatos
     {
         public const int CANTIDAD_BLOQUES = 4;
-        BloqueCacheDatos[] bloques;
+        public BloqueCacheDatos[] bloques;
 
         /*
          * Constructor de la clase
